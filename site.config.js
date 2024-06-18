@@ -4,29 +4,29 @@ const CONFIG = {
     name: "alpaka206",
     image: "/avatar.svg", // If you want to create your own notion avatar, check out https://notion-avatar.vercel.app
     role: "frontend developer",
-    bio: "I develop everything using node.",
+    bio: "hello world",
     email: "gyuwon05@gmail.com",
-    linkedin: "morethanmin",
     github: "alpaka206",
-    instagram: "",
+    instagram: "kim.q1",
   },
-  projects: [
-    {
-      name: `morethan-log`,
-      href: "https://github.com/alpaka206/morethan-log",
-    },
-  ],
+  // projects: [
+  //   {
+  //     name: `alpaka206`,
+  //     href: "https://github.com/alpaka206/morethan-log",
+  //   },
+  // ],
+  projects: undefined,
   // blog setting (required)
   blog: {
-    title: "morethan-log",
-    description: "welcome to morethan-log!",
+    title: "alpaka206",
+    description: "welcome to alpaka206's blog!",
   },
 
   // CONFIG configration (required)
-  link: "https://morethan-log.vercel.app",
-  since: 2022, // If leave this empty, current year will be used.
+  link: "https://alpaka206.vercel.app/",
+  since: 2024, // If leave this empty, current year will be used.
   lang: "en-US", // ['en-US', 'zh-CN', 'zh-HK', 'zh-TW', 'ja-JP', 'es-ES', 'ko-KR']
-  ogImageGenerateURL: "https://og-image-korean.vercel.app", // The link to generate OG image, don't end with a slash
+  ogImageGenerateURL: "https://og-image-korean.vercel.app/.png?theme=light&md=1&fontSize=175px&images=https%3A%2F%2Fassets.vercel.com%2Fimage%2Fupload%2Ffront%2Fassets%2Fdesign%2Fhyper-color-logo.svg&images=https%3A%2F%2Fvelog.velcdn.com%2Fimages%2Falpaka206%2Fpost%2Fa32015f8-3d78-453e-873e-363596f774b6%2Fimage.png&images=&widths=0&widths=2000&widths=0&heights=0&heights=1044&heights=0", // The link to generate OG image, don't end with a slash
 
   // notion configuration (required)
   notionConfig: {
