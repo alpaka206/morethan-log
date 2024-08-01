@@ -27,6 +27,7 @@ export default Header
 const StyledWrapper = styled.div`
   z-index: ${zIndexes.header};
   position: sticky;
+  padding: 15px 0;
   top: 0;
   background-color: ${({ theme }) => theme.colors.gray2};
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);

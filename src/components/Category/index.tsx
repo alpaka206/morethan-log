@@ -1,10 +1,14 @@
 import { useRouter } from "next/router"
 import React from "react"
-import { COLOR_SET } from "./constants"
+import { COLOR_SET, CUSTOM_COLOR_SET } from "./constants"
 import styled from "@emotion/styled"
 import { colors } from "src/styles"
 
 export const getColorClassByName = (name: string): string => {
+  if (CUSTOM_COLOR_SET[name]) {
+    return CUSTOM_COLOR_SET[name]
+  }
+
   try {
     let sum = 0
     name.split("").forEach((alphabet) => (sum = sum + alphabet.charCodeAt(0)))
@@ -29,6 +33,7 @@ const Category: React.FC<Props> = ({ readOnly = false, children }) => {
     if (readOnly) return
     router.push(`/?category=${value}`)
   }
+
   return (
     <StyledWrapper
       onClick={() => handleClick(children)}
