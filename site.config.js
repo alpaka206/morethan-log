@@ -1,3 +1,5 @@
+require("dotenv").config()
+
 const CONFIG = {
   // profile setting (required)
   profile: {

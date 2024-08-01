@@ -47,7 +47,7 @@ const Modal = dynamic(
 )
 
 const mapPageUrl = (id: string) => {
-  return "https://www.notion.so/" + id.replace(/-/g, "")
+  return "https://quiet-nitrogen-6d5.notion.site/" + id.replace(/-/g, "")
 }
 
 type Props = {
