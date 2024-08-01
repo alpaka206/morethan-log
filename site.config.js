@@ -12,13 +12,13 @@ const CONFIG = {
     github: "alpaka206",
     instagram: "alpaka_dev",
   },
-  other: [
+
+  projects: [
     {
       name: `정보처리기사 정리`,
       href: "https://velog.io/@alpaka206/posts",
     },
   ],
-  projects: undefined,
   // blog setting (required)
   blog: {
     title: "alpaka206",
