@@ -18,11 +18,11 @@ export const COLOR_SET: Record<string, string> = {
 }
 
 export const CUSTOM_COLOR_SET: Record<string, string> = {
-  "💾 Record": "rgb(216, 208, 255)",
-  "🍎 Project": "rgb(255, 216, 216)",
-  "✏️ Study": "rgb(251, 239, 186)",
-  "🪪 Credential": "rgb(186 230 253)",
+  "✨ Project": "rgb(186 230 253)", //하늘색
+  "✍️ 정보처리기사": "rgb(231 229 228)", //연회색
+  "💻 Frontend": "rgb(209 250 229)", //연한초록색
   "🏕️ BootCamp": "rgb(184 251 223)",
   "🌐 Extracurriculars": "rgb(186 230 253)",
+  "💾 Record": "rgb(216, 208, 255)",
   // Add more categories and colors as needed
 }
