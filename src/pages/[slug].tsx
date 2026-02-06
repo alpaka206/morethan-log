@@ -35,8 +35,13 @@ export const getStaticProps: GetStaticProps = async (context) => {
   await queryClient.prefetchQuery(queryKey.posts(), () => feedPosts)
 
   const detailPosts = filterPosts(posts, filter)
-  const postDetail = detailPosts.find((t: any) => t.slug === slug)
-  const recordMap = await getRecordMap(postDetail?.id!)
+  const postDetail = detailPosts.find((t) => t.slug === slug)
+
+  if (!postDetail) {
+    return { notFound: true }
+  }
+
+  const recordMap = await getRecordMap(postDetail.id)
 
   await queryClient.prefetchQuery(queryKey.post(`${slug}`), () => ({
     ...postDetail,

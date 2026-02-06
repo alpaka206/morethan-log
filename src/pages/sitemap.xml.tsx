@@ -27,4 +27,5 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
 }
 
 // Default export to prevent next.js errors
-export default () => {}
+const SitemapPage = () => {}
+export default SitemapPage
