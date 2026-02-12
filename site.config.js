@@ -6,7 +6,7 @@ const CONFIG = {
     name: "alpaka206",
     image: "/gyuwon.png", // If you want to create your own notion avatar, check out https://notion-avatar.vercel.app
     role: "Frontend Engineer",
-    bio: "hello world",
+    bio: `세상에 완벽한 코드는 없다고 생각합니다.\n \n그럼에도 조금 더 나은 코드를 만들기 위해 고민하고, 공부한 내용을 정리합니다.`,
     email: "gyuwon05@gmail.com",
     linkedin: "규원-김-957a6b320",
     github: "alpaka206",
@@ -15,7 +15,7 @@ const CONFIG = {
 
   projects: [
     {
-      name: `정보처리기사 정리`,
+      name: `정보처리기사 정리 blog`,
       href: "https://velog.io/@alpaka206/posts",
     },
   ],
