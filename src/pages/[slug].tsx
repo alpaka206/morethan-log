@@ -30,29 +30,34 @@ export const getStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async (context) => {
   const slug = context.params?.slug
 
-  const posts = await getPosts()
-  const feedPosts = filterPosts(posts)
-  await queryClient.prefetchQuery(queryKey.posts(), () => feedPosts)
+  try {
+    const posts = await getPosts()
+    const feedPosts = filterPosts(posts)
+    await queryClient.prefetchQuery(queryKey.posts(), () => feedPosts)
 
-  const detailPosts = filterPosts(posts, filter)
-  const postDetail = detailPosts.find((t) => t.slug === slug)
+    const detailPosts = filterPosts(posts, filter)
+    const postDetail = detailPosts.find((t) => t.slug === slug)
 
-  if (!postDetail) {
-    return { notFound: true }
-  }
+    if (!postDetail) {
+      return { notFound: true }
+    }
 
-  const recordMap = await getRecordMap(postDetail.id)
+    const recordMap = await getRecordMap(postDetail.id)
 
-  await queryClient.prefetchQuery(queryKey.post(`${slug}`), () => ({
-    ...postDetail,
-    recordMap,
-  }))
+    await queryClient.prefetchQuery(queryKey.post(`${slug}`), () => ({
+      ...postDetail,
+      recordMap,
+    }))
 
-  return {
-    props: {
-      dehydratedState: dehydrate(queryClient),
-    },
-    revalidate: CONFIG.revalidateTime,
+    return {
+      props: {
+        dehydratedState: dehydrate(queryClient),
+      },
+      revalidate: CONFIG.revalidateTime,
+    }
+  } catch (error) {
+    console.error(`Failed to build page "/${slug}":`, error)
+    return { notFound: true, revalidate: 60 }
   }
 }
 
