@@ -62,7 +62,7 @@ const CONFIG = {
     },
   },
   utterances: {
-    enable: true,
+    enable: Boolean(process.env.NEXT_PUBLIC_UTTERANCES_REPO),
     config: {
       repo: process.env.NEXT_PUBLIC_UTTERANCES_REPO || "",
       "issue-term": "og:title",

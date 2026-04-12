@@ -6,7 +6,7 @@ import CustomError from "src/routes/Error"
 import { getRecordMap, getPosts } from "src/apis"
 import MetaConfig from "src/components/MetaConfig"
 import { GetStaticProps } from "next"
-import { queryClient } from "src/libs/react-query"
+import { createQueryClient } from "src/libs/react-query"
 import { queryKey } from "src/constants/queryKey"
 import { dehydrate } from "@tanstack/react-query"
 import usePostQuery from "src/hooks/usePostQuery"
@@ -29,6 +29,7 @@ export const getStaticPaths = async () => {
 
 export const getStaticProps: GetStaticProps = async (context) => {
   const slug = context.params?.slug
+  const queryClient = createQueryClient()
 
   try {
     const posts = await getPosts()
@@ -57,7 +58,7 @@ export const getStaticProps: GetStaticProps = async (context) => {
     }
   } catch (error) {
     console.error(`Failed to build page "/${slug}":`, error)
-    return { notFound: true, revalidate: 60 }
+    throw error
   }
 }
 

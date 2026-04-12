@@ -46,7 +46,11 @@ const Modal = dynamic(
   }
 )
 
-const mapPageUrl = (id: string) => {
+const mapPageUrl = (id?: string) => {
+  if (!id) {
+    return "#"
+  }
+
   return "https://quiet-nitrogen-6d5.notion.site/" + id.replace(/-/g, "")
 }
 

@@ -5,6 +5,65 @@ import { customMapImageUrl } from "./customMapImageUrl"
 
 const getBlockValue = (block: BlockMap, id: string) =>
   (block?.[id]?.value as any)?.value
+const userCache = new Map<string, Promise<any>>()
+const RETRY_DELAYS = [1000, 2000, 4000]
+
+const wait = (ms: number) =>
+  new Promise((resolve) => {
+    setTimeout(resolve, ms)
+  })
+
+const isRateLimitError = (error: any) =>
+  error?.code === "ERR_NON_2XX_3XX_RESPONSE" &&
+  `${error?.message || ""}`.includes("429")
+
+const getUsersWithRetry = async (api: NotionAPI, rawUserId: any) => {
+  for (let attempt = 0; attempt <= RETRY_DELAYS.length; attempt++) {
+    try {
+      return await api.getUsers(rawUserId)
+    } catch (error) {
+      if (!isRateLimitError(error) || attempt === RETRY_DELAYS.length) {
+        throw error
+      }
+
+      await wait(RETRY_DELAYS[attempt])
+    }
+  }
+
+  return null
+}
+
+const getUser = async (api: NotionAPI, rawUserId: any) => {
+  const userId = rawUserId?.[1]
+
+  if (!userId) {
+    return null
+  }
+
+  if (!userCache.has(userId)) {
+    userCache.set(
+      userId,
+      getUsersWithRetry(api, rawUserId).then((res: any) => {
+        const resValue = res?.recordMapWithRoles?.notion_user?.[userId]?.value
+
+        if (!resValue) {
+          return null
+        }
+
+        return {
+          id: resValue.id || null,
+          name:
+            resValue.name ||
+            `${resValue.family_name || ""}${resValue.given_name || ""}` ||
+            null,
+          profile_photo: resValue.profile_photo || null,
+        }
+      })
+    )
+  }
+
+  return userCache.get(userId)
+}
 
 async function getPageProperties(
   id: string,
@@ -56,19 +115,11 @@ async function getPageProperties(
         const users = []
         for (let j = 0; j < rawUsers.length; j++) {
           if (rawUsers[j][0][1]) {
-            const userId = rawUsers[j][0]
-            const res: any = await api.getUsers(userId)
-            const resValue =
-              res?.recordMapWithRoles?.notion_user?.[userId[1]]?.value
-            const user = {
-              id: resValue?.id,
-              name:
-                resValue?.name ||
-                `${resValue?.family_name}${resValue?.given_name}` ||
-                undefined,
-              profile_photo: resValue?.profile_photo || null,
+            const user = await getUser(api, rawUsers[j][0])
+
+            if (user) {
+              users.push(user)
             }
-            users.push(user)
           }
         }
         properties[schemaEntry.name] = users
