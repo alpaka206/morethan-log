@@ -12,11 +12,6 @@ const integrations = {
     enable: true,
     label: "Utterances",
   },
-  cusdis: {
-    enable: false,
-    host: "https://cusdis.com",
-    appid: "",
-  },
 }
 
 module.exports = { integrations }

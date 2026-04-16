@@ -32,7 +32,7 @@ const PostDetail: React.FC<Props> = ({ data, pageLinkMap }) => {
         {data.type[0] === "Post" && (
           <>
             <Footer />
-            <CommentBox data={data} />
+            <CommentBox />
           </>
         )}
       </article>
