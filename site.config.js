@@ -51,13 +51,6 @@ const CONFIG = {
       label: integrations.utterances.label,
     },
   },
-  cusdis: {
-    enable: integrations.cusdis.enable,
-    config: {
-      host: integrations.cusdis.host,
-      appid: integrations.cusdis.appid,
-    },
-  },
 
   isProd: process.env.VERCEL_ENV === "production",
   revalidateTime: 21600 * 7,

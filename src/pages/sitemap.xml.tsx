@@ -1,35 +1,56 @@
-import { getPosts } from "../apis/notion-client/getPosts"
-import { CONFIG } from "site.config"
-import { getServerSideSitemap, ISitemapField } from "next-sitemap"
 import { GetServerSideProps } from "next"
+import { CONFIG } from "site.config"
+import { getPosts } from "../apis/notion-client/getPosts"
 import { joinUrl } from "src/libs/utils"
 
-export const getServerSideProps: GetServerSideProps = async (ctx) => {
+const escapeXml = (value: string) =>
+  value
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+
+export const getServerSideProps: GetServerSideProps = async ({ res }) => {
   const posts = await getPosts()
-  const dynamicPaths = posts.map((post) => ({
-    loc: joinUrl(CONFIG.link, post.slug),
-    lastmod: post.date?.start_date || post.createdTime,
-  }))
+  const pages = [
+    {
+      loc: joinUrl(CONFIG.link),
+      lastmod: new Date().toISOString(),
+      priority: "1.0",
+      changefreq: "daily",
+    },
+    ...posts.map((post) => ({
+      loc: joinUrl(CONFIG.link, post.slug),
+      lastmod: new Date(post.date?.start_date || post.createdTime).toISOString(),
+      priority: "0.7",
+      changefreq: "daily",
+    })),
+  ]
 
-  // Create an array of fields, each with a loc and lastmod
-  const fields: ISitemapField[] = dynamicPaths.map((path) => ({
-    loc: path.loc,
-    lastmod: new Date(path.lastmod).toISOString(),
-    priority: 0.7,
-    changefreq: "daily",
-  }))
+  const sitemap = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${pages
+  .map(
+    (page) => `  <url>
+    <loc>${escapeXml(page.loc)}</loc>
+    <lastmod>${page.lastmod}</lastmod>
+    <changefreq>${page.changefreq}</changefreq>
+    <priority>${page.priority}</priority>
+  </url>`
+  )
+  .join("\n")}
+</urlset>`
 
-  // Include the site root separately
-  fields.unshift({
-    loc: joinUrl(CONFIG.link),
-    lastmod: new Date().toISOString(),
-    priority: 1.0,
-    changefreq: "daily",
-  })
+  res.setHeader("Content-Type", "application/xml")
+  res.write(sitemap)
+  res.end()
 
-  return getServerSideSitemap(ctx, fields)
+  return {
+    props: {},
+  }
 }
 
-// Default export to prevent next.js errors
-const SitemapPage = () => {}
+const SitemapPage = () => null
+
 export default SitemapPage
