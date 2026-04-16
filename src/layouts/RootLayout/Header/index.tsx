@@ -2,6 +2,10 @@ import NavBar from "./NavBar"
 import Logo from "./Logo"
 import ThemeToggle from "./ThemeToggle"
 import styled from "@emotion/styled"
+import {
+  HEADER_CONTENT_HEIGHT,
+  HEADER_VERTICAL_PADDING,
+} from "src/constants/layout"
 import { zIndexes } from "src/styles/zIndexes"
 
 type Props = {
@@ -27,7 +31,7 @@ export default Header
 const StyledWrapper = styled.div`
   z-index: ${zIndexes.header};
   position: sticky;
-  padding: 15px 0;
+  padding: ${HEADER_VERTICAL_PADDING}px 0;
   top: 0;
   background-color: ${({ theme }) => theme.colors.gray2};
   box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
@@ -40,7 +44,7 @@ const StyledWrapper = styled.div`
     align-items: center;
     width: 100%;
     max-width: 1120px;
-    height: 3rem;
+    height: ${HEADER_CONTENT_HEIGHT}px;
     margin: 0 auto;
     &[data-full-width="true"] {
       @media (min-width: 768px) {

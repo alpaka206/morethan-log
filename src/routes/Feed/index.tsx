@@ -11,8 +11,7 @@ import ServiceCard from "./ServiceCard"
 import ContactCard from "./ContactCard"
 import PostList from "./PostList"
 import PinnedPosts from "./PostList/PinnedPosts"
-
-const HEADER_HEIGHT = 73
+import { HEADER_HEIGHT } from "src/constants/layout"
 
 type Props = {}
 
@@ -21,12 +20,7 @@ const Feed: React.FC<Props> = () => {
 
   return (
     <StyledWrapper>
-      <div
-        className="lt"
-        css={{
-          height: `calc(100vh - ${HEADER_HEIGHT}px)`,
-        }}
-      >
+      <div className="lt">
         <ProfileCard />
         <ServiceCard />
         <ContactCard />
@@ -47,12 +41,7 @@ const Feed: React.FC<Props> = () => {
           <Footer />
         </div>
       </div>
-      <div
-        className="rt"
-        css={{
-          height: `calc(100vh - ${HEADER_HEIGHT}px)`,
-        }}
-      >
+      <div className="rt">
         <TagList />
       </div>
     </StyledWrapper>
@@ -62,32 +51,42 @@ const Feed: React.FC<Props> = () => {
 export default Feed
 
 const StyledWrapper = styled.div`
-  grid-template-columns: repeat(12, minmax(0, 1fr));
+  display: block;
+  padding: 0.5rem 0;
 
-  padding: 2rem 0;
-  display: grid;
-  gap: 1.5rem;
+  @media (min-width: 1024px) {
+    display: grid;
+    grid-template-columns: repeat(12, minmax(0, 1fr));
+    gap: 1.5rem;
+    padding: 2rem 0;
+    height: calc(100dvh - ${HEADER_HEIGHT}px);
+    overflow: hidden;
+  }
 
-  @media (max-width: 768px) {
-    display: block;
-    padding: 0.5rem 0;
+  > .lt,
+  > .mid,
+  > .rt {
+    @media (min-width: 1024px) {
+      min-height: 0;
+      height: 100%;
+      overflow-y: auto;
+      overflow-x: hidden;
+      overscroll-behavior: contain;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+
+      &::-webkit-scrollbar {
+        display: none;
+      }
+    }
   }
 
   > .lt {
     display: none;
-    overflow: scroll;
-    position: sticky;
-    grid-column: span 3 / span 3;
-    top: ${HEADER_HEIGHT - 10}px;
-
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    &::-webkit-scrollbar {
-      display: none;
-    }
 
     @media (min-width: 1024px) {
       display: block;
+      grid-column: span 3 / span 3;
     }
 
     .footer {
@@ -96,8 +95,6 @@ const StyledWrapper = styled.div`
   }
 
   > .mid {
-    grid-column: span 12 / span 12;
-
     @media (min-width: 1024px) {
       grid-column: span 7 / span 7;
     }
@@ -111,7 +108,7 @@ const StyledWrapper = styled.div`
     }
 
     > .footer {
-      padding-bottom: 2rem;
+      padding: 0.5rem 0;
       @media (min-width: 1024px) {
         display: none;
       }
@@ -119,16 +116,7 @@ const StyledWrapper = styled.div`
   }
 
   > .rt {
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-    &::-webkit-scrollbar {
-      display: none;
-    }
-
     display: none;
-    overflow: scroll;
-    position: sticky;
-    top: ${HEADER_HEIGHT - 10}px;
 
     @media (min-width: 1024px) {
       display: block;

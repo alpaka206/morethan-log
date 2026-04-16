@@ -1,14 +1,28 @@
 import styled from "@emotion/styled"
-import Link from "next/link"
+import { CONFIG } from "site.config"
 
 const NavBar: React.FC = () => {
-  const links = [{ id: 1, name: "About", to: "/about" }]
+  const links = [
+    {
+      id: 1,
+      name: "Portfolio",
+      to: CONFIG.profile.portfolio,
+      external: true,
+    },
+  ]
+
   return (
-    <StyledWrapper className="">
+    <StyledWrapper>
       <ul>
         {links.map((link) => (
           <li key={link.id}>
-            <Link href={link.to}>{link.name}</Link>
+            <a
+              href={link.to}
+              target={link.external ? "_blank" : undefined}
+              rel={link.external ? "noreferrer" : undefined}
+            >
+              {link.name}
+            </a>
           </li>
         ))}
       </ul>

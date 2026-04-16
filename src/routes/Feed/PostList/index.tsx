@@ -3,6 +3,7 @@ import React, { useMemo } from "react"
 import PostCard from "src/routes/Feed/PostList/PostCard"
 import { DEFAULT_CATEGORY } from "src/constants"
 import usePostsQuery from "src/hooks/usePostsQuery"
+import { filterPosts } from "./filterPosts"
 
 type Props = {
   q: string
@@ -12,42 +13,27 @@ const PostList: React.FC<Props> = ({ q }) => {
   const router = useRouter()
   const data = usePostsQuery()
 
-  const currentTag = `${router.query.tag || ``}` || undefined
-  const currentCategory = `${router.query.category || ``}` || DEFAULT_CATEGORY
-  const currentOrder = `${router.query.order || ``}` || "desc"
+  const currentTag = Array.isArray(router.query.tag)
+    ? router.query.tag[0]
+    : `${router.query.tag || ``}` || undefined
+  const currentCategory = Array.isArray(router.query.category)
+    ? router.query.category[0]
+    : `${router.query.category || ``}` || DEFAULT_CATEGORY
+  const currentOrder = Array.isArray(router.query.order)
+    ? router.query.order[0]
+    : `${router.query.order || ``}` || "desc"
 
-  const filteredPosts = useMemo(() => {
-    let result = data
-
-    // keyword
-    result = result.filter((post) => {
-      const tagContent = post.tags ? post.tags.join(" ") : ""
-      const searchContent = post.title + post.summary + tagContent
-      return searchContent.toLowerCase().includes(q.toLowerCase())
-    })
-
-    // tag
-    if (currentTag) {
-      result = result.filter(
-        (post) => post && post.tags && post.tags.includes(currentTag)
-      )
-    }
-
-    // category
-    if (currentCategory !== DEFAULT_CATEGORY) {
-      result = result.filter(
-        (post) =>
-          post && post.category && post.category.includes(currentCategory)
-      )
-    }
-
-    // order
-    if (currentOrder !== "desc") {
-      result = [...result].reverse()
-    }
-
-    return result
-  }, [data, q, currentTag, currentCategory, currentOrder])
+  const filteredPosts = useMemo(
+    () =>
+      filterPosts({
+        posts: data,
+        q,
+        tag: currentTag,
+        category: currentCategory,
+        order: currentOrder === "asc" ? "asc" : "desc",
+      }),
+    [currentCategory, currentOrder, currentTag, data, q]
+  )
 
   return (
     <>

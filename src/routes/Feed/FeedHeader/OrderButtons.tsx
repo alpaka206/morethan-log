@@ -9,7 +9,9 @@ type Props = {}
 const OrderButtons: React.FC<Props> = () => {
   const router = useRouter()
 
-  const currentOrder = `${router.query.order || ``}` || ("desc" as TOrder)
+  const currentOrder = Array.isArray(router.query.order)
+    ? (router.query.order[0] as TOrder)
+    : (`${router.query.order || ``}` || "desc") as TOrder
 
   const handleClickOrderBy = (value: TOrder) => {
     router.push({
@@ -21,18 +23,22 @@ const OrderButtons: React.FC<Props> = () => {
   }
   return (
     <StyledWrapper>
-      <a
+      <button
+        type="button"
         data-active={currentOrder === "desc"}
+        aria-pressed={currentOrder === "desc"}
         onClick={() => handleClickOrderBy("desc")}
       >
         Desc
-      </a>
-      <a
+      </button>
+      <button
+        type="button"
         data-active={currentOrder === "asc"}
+        aria-pressed={currentOrder === "asc"}
         onClick={() => handleClickOrderBy("asc")}
       >
         Asc
-      </a>
+      </button>
     </StyledWrapper>
   )
 }
@@ -44,7 +50,7 @@ const StyledWrapper = styled.div`
   gap: 0.5rem;
   font-size: 0.875rem;
   line-height: 1.25rem;
-  a {
+  button {
     cursor: pointer;
     color: ${({ theme }) => theme.colors.gray10};
 
