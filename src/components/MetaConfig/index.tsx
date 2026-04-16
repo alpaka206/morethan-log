@@ -11,14 +11,21 @@ export type MetaConfigProps = {
 }
 
 const MetaConfig: React.FC<MetaConfigProps> = (props) => {
+  const isPost = props.type === "Post"
+  const ogType = isPost ? "article" : "website"
+  const keywords = CONFIG.seo.keywords?.join(", ")
+
   return (
     <Head>
       <title>{props.title}</title>
       <meta name="robots" content="follow, index" />
       <meta charSet="UTF-8" />
       <meta name="description" content={props.description} />
+      {keywords && <meta name="keywords" content={keywords} />}
+      <link rel="canonical" href={props.url} />
       {/* og */}
-      <meta property="og:type" content={props.type} />
+      <meta property="og:type" content={ogType} />
+      <meta property="og:site_name" content={CONFIG.blog.title} />
       <meta property="og:title" content={props.title} />
       <meta property="og:description" content={props.description} />
       <meta property="og:url" content={props.url} />
@@ -30,7 +37,7 @@ const MetaConfig: React.FC<MetaConfigProps> = (props) => {
       <meta name="twitter:card" content="summary_large_image" />
       {props.image && <meta name="twitter:image" content={props.image} />}
       {/* post */}
-      {props.type === "Post" && (
+      {isPost && (
         <>
           <meta property="article:published_time" content={props.date} />
           <meta property="article:author" content={CONFIG.profile.name} />

@@ -1,83 +1,66 @@
 require("dotenv").config()
 
+const { integrations, profile, projects, seo, site } = require("./config")
+
 const CONFIG = {
-  // profile setting (required)
-  profile: {
-    name: "alpaka206",
-    image: "/gyuwon.png", // If you want to create your own notion avatar, check out https://notion-avatar.vercel.app
-    role: "Frontend Engineer",
-    bio: `세상에 완벽한 코드는 없다고 생각합니다.\n \n그럼에도 조금 더 나은 코드를 만들기 위해 고민하고, 공부한 내용을 정리합니다.`,
-    email: "gyuwon05@gmail.com",
-    linkedin: "규원-김-957a6b320",
-    github: "alpaka206",
-    instagram: "alpaka_dev",
-  },
-
-  projects: [
-    {
-      name: `정보처리기사 정리 blog`,
-      href: "https://velog.io/@alpaka206/posts",
-    },
-  ],
-  // blog setting (required)
+  profile,
+  projects,
   blog: {
-    title: "alpaka206",
-    description: "welcome to alpaka206's blog!",
-    theme: "light",
+    title: site.title,
+    description: site.description,
+    theme: site.theme,
   },
 
-  // CONFIG configration (required)
-  link: "https://alpaka206.vercel.app/",
-  since: 2024, // If leave this empty, current year will be used.
-  lang: "ko-KR", // ['en-US', 'zh-CN', 'zh-HK', 'zh-TW', 'ja-JP', 'es-ES', 'ko-KR']
-  ogImageGenerateURL:
-    "https://og-image-korean.vercel.app/.png?theme=light&md=1&fontSize=175px&images=https%3A%2F%2Fassets.vercel.com%2Fimage%2Fupload%2Ffront%2Fassets%2Fdesign%2Fhyper-color-logo.svg&images=https%3A%2F%2Fvelog.velcdn.com%2Fimages%2Falpaka206%2Fpost%2Fa32015f8-3d78-453e-873e-363596f774b6%2Fimage.png&images=&widths=0&widths=2000&widths=0&heights=0&heights=1044&heights=0", // The link to generate OG image, don't end with a slash
-  seo: {
-    keywords: ["alpaka206", "Blog"],
-  },
+  // core site config
+  link: site.url,
+  since: site.since,
+  lang: site.lang,
+  ogImageGenerateURL: site.ogImageGenerateURL,
+  seo,
 
-  // notion configuration (required)
+  // notion configuration
   notionConfig: {
     pageId: process.env.NOTION_PAGE_ID,
   },
 
-  // plugin configuration (optional)
+  // integrations
   googleAnalytics: {
-    enable: true,
-    // enable: false,
+    enable: integrations.googleAnalytics.enable,
     config: {
       measurementId: process.env.NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID || "",
     },
   },
   googleSearchConsole: {
-    enable: true,
+    enable: integrations.googleSearchConsole.enable,
     config: {
       siteVerification: process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || "",
     },
   },
   naverSearchAdvisor: {
-    enable: true,
+    enable: integrations.naverSearchAdvisor.enable,
     config: {
       siteVerification: process.env.NEXT_PUBLIC_NAVER_SITE_VERIFICATION || "",
     },
   },
   utterances: {
-    enable: Boolean(process.env.NEXT_PUBLIC_UTTERANCES_REPO),
+    enable:
+      integrations.utterances.enable &&
+      Boolean(process.env.NEXT_PUBLIC_UTTERANCES_REPO),
     config: {
       repo: process.env.NEXT_PUBLIC_UTTERANCES_REPO || "",
-      "issue-term": "og:title",
-      label: "💬 Utterances",
+      label: integrations.utterances.label,
     },
   },
   cusdis: {
-    enable: false,
+    enable: integrations.cusdis.enable,
     config: {
-      host: "https://cusdis.com",
-      appid: "", // Embed Code -> data-app-id value
+      host: integrations.cusdis.host,
+      appid: integrations.cusdis.appid,
     },
   },
-  isProd: process.env.VERCEL_ENV === "production", // distinguish between development and production environment (ref: https://vercel.com/docs/environment-variables#system-environment-variables)
-  revalidateTime: 21600 * 7, // revalidate time for [slug], index
+
+  isProd: process.env.VERCEL_ENV === "production",
+  revalidateTime: 21600 * 7,
 }
 
 module.exports = { CONFIG }

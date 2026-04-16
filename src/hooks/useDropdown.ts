@@ -28,7 +28,7 @@ const useDropdown: useDropdownType = () => {
   }, [isDropdownOpened])
 
   const onOpenBtn = useCallback(() => {
-    setIsDropdownOpened(true)
+    setIsDropdownOpened((prev) => !prev)
   }, [])
 
   return [menuRef, isDropdownOpened, onOpenBtn]

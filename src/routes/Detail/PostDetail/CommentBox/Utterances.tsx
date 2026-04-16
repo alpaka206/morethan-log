@@ -4,13 +4,7 @@ import styled from "@emotion/styled"
 import useScheme from "src/hooks/useScheme"
 import { useRouter } from "next/router"
 
-//TODO: useRef?
-
-type Props = {
-  issueTerm: string
-}
-
-const Utterances: React.FC<Props> = ({ issueTerm }) => {
+const Utterances: React.FC = () => {
   const [scheme] = useScheme()
   const router = useRouter()
 
@@ -23,7 +17,7 @@ const Utterances: React.FC<Props> = ({ issueTerm }) => {
     script.setAttribute("src", "https://utteranc.es/client.js")
     script.setAttribute("crossorigin", "anonymous")
     script.setAttribute("async", `true`)
-    script.setAttribute("issue-term", issueTerm)
+    script.setAttribute("issue-term", "pathname")
     script.setAttribute("theme", theme)
     const config: Record<string, string> = CONFIG.utterances.config
     Object.keys(config).forEach((key) => {
@@ -33,7 +27,7 @@ const Utterances: React.FC<Props> = ({ issueTerm }) => {
     return () => {
       anchor.innerHTML = ""
     }
-  }, [scheme, router, issueTerm])
+  }, [router.asPath, scheme])
   return (
     <>
       <StyledWrapper id="comments">

@@ -38,7 +38,6 @@ import 'prismjs/components/prism-stylus.js'
 import 'prismjs/components/prism-swift.js'
 import 'prismjs/components/prism-wasm.js'
 import 'prismjs/components/prism-yaml.js'
-import "prismjs/components/prism-go.js"
 
 type Props = {
   children: ReactNode
@@ -48,14 +47,12 @@ const RootLayout = ({ children }: Props) => {
   const [scheme] = useScheme()
   useGtagEffect()
   useEffect(() => {
-    Prism.highlightAll();
-  }, []);
+    Prism.highlightAll()
+  }, [])
 
   return (
     <ThemeProvider scheme={scheme}>
       <Scripts />
-      {/* // TODO: replace react query */}
-      {/* {metaConfig.type !== "Paper" && <Header />} */}
       <Header fullWidth={false} />
       <StyledMain>{children}</StyledMain>
     </ThemeProvider>

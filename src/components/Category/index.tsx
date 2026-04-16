@@ -34,22 +34,30 @@ const Category: React.FC<Props> = ({ readOnly = false, children }) => {
     router.push(`/?category=${value}`)
   }
 
+  const commonStyle = {
+    backgroundColor: getColorClassByName(children),
+    cursor: readOnly ? "default" : "pointer",
+  }
+
+  if (readOnly) {
+    return <StyledReadOnly css={commonStyle}>{children}</StyledReadOnly>
+  }
+
   return (
-    <StyledWrapper
+    <StyledButton
+      type="button"
       onClick={() => handleClick(children)}
-      css={{
-        backgroundColor: getColorClassByName(children),
-        cursor: readOnly ? "default" : "pointer",
-      }}
+      aria-label={`Filter posts by category ${children}`}
+      css={commonStyle}
     >
       {children}
-    </StyledWrapper>
+    </StyledButton>
   )
 }
 
 export default Category
 
-const StyledWrapper = styled.div`
+const StyledButton = styled.button`
   padding-top: 0.25rem;
   padding-bottom: 0.25rem;
   padding-left: 0.5rem;
@@ -60,4 +68,18 @@ const StyledWrapper = styled.div`
   line-height: 1.25rem;
   opacity: 0.9;
   color: ${colors.dark.gray1};
+`
+
+const StyledReadOnly = styled.span`
+  padding-top: 0.25rem;
+  padding-bottom: 0.25rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  border-radius: 9999px;
+  width: fit-content;
+  font-size: 0.875rem;
+  line-height: 1.25rem;
+  opacity: 0.9;
+  color: ${colors.dark.gray1};
+  display: inline-flex;
 `

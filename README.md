@@ -25,7 +25,7 @@ Next.js static blog using Notion as a Content Management System (CMS). Supports 
 
 **🤖 Customisable and Supports various plugin through CONFIG**
 
-- Your profile information can be updated through Config. (`site.config.js`)
+- Your profile information can be updated through Config.
 - Plugins support includes, Google Analytics, Search Console and also Commenting using Github Issues(Utterances) or Cusdis.
 
 ## Getting Started
@@ -34,7 +34,7 @@ Next.js static blog using Notion as a Content Management System (CMS). Supports 
 2. [Fork](https://github.com/morethanmin/morethan-log/fork) the repo to your Profile.
 3. Duplicate [this Notion template](https://morethanmin.notion.site/12c38b5f459d4eb9a759f92fba6cea36?v=2e7962408e3842b2a1a801bf3546edda), and Share to Web.
 4. Copy the Web Link and keep note of the Notion Page Id from the Link which will be in this format [username.notion.site/`NOTION_PAGE_ID`?v=`VERSION_ID`]. 
-5. Clone your forked repo and then customize `site.config.js` based on your preference.
+5. Clone your forked repo and then customize the config files based on your preference.
 6. Deploy on Vercel, with the following environment variables.
 
    - `NOTION_PAGE_ID` (Required): The Notion page Id got from the Share to Web URL. This is not the entire URL, but just the NOTION_PAGE_ID part as shown above.
@@ -42,6 +42,120 @@ Next.js static blog using Notion as a Content Management System (CMS). Supports 
    - `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION` : For Google search console Plugin.
    - `NEXT_PUBLIC_NAVER_SITE_VERIFICATION` : For Naver search advisor Plugin.
    - `NEXT_PUBLIC_UTTERANCES_REPO` : For Utterances Plugin.
+
+## 한국어 설정 가이드
+
+포크해서 바로 쓰는 기준으로 보면, 이제 직접 수정해야 하는 값은 대부분 `config/` 폴더에 모여 있습니다.
+
+### 1. 설치와 실행
+
+```bash
+npm install
+npm run dev
+```
+
+브라우저에서 `http://localhost:3000`으로 확인합니다.
+
+### 2. 환경변수 설정
+
+프로젝트 루트에서 `.env.example`을 복사해 `.env.local`을 만듭니다.
+
+```bash
+cp .env.example .env.local
+```
+
+Windows PowerShell:
+
+```powershell
+Copy-Item .env.example .env.local
+```
+
+필수 값:
+
+- `NOTION_PAGE_ID`
+
+선택 값:
+
+- `NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID`
+- `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`
+- `NEXT_PUBLIC_NAVER_SITE_VERIFICATION`
+- `NEXT_PUBLIC_UTTERANCES_REPO`
+
+### 3. 개인 설정 파일
+
+#### `config/profile.js`
+
+아래 항목을 수정합니다.
+
+- 이름
+- 프로필 이미지 경로
+- 역할
+- 소개글
+- 이메일
+- GitHub
+- Instagram
+- LinkedIn
+- Portfolio
+
+#### `config/site.js`
+
+아래 항목을 수정합니다.
+
+- 블로그 제목
+- 설명
+- 기본 테마
+- 사이트 URL
+- 시작 연도
+- 언어
+- OG 이미지 URL
+
+#### `config/projects.js`
+
+사이드 카드에 보여줄 외부 링크 목록입니다.
+
+#### `config/seo.js`
+
+기본 SEO 키워드입니다.
+
+#### `config/integrations.js`
+
+연동 기능 사용 여부를 켜고 끌 수 있습니다.
+
+- Google Analytics
+- Google Search Console
+- Naver Search Advisor
+- Utterances
+- Cusdis
+
+### 4. 프로필 이미지 변경
+
+기본 이미지는 `public/gyuwon.png`입니다.
+
+다른 이미지로 바꾸려면:
+
+1. 원하는 파일을 `public/`에 넣습니다.
+2. `config/profile.js`의 `image` 값을 바꿉니다.
+
+예시:
+
+```js
+image: "/my-profile.png"
+```
+
+### 5. 실제로 자주 수정하는 파일
+
+- [config/profile.js](config/profile.js)
+- [config/site.js](config/site.js)
+- [config/projects.js](config/projects.js)
+- [config/seo.js](config/seo.js)
+- [config/integrations.js](config/integrations.js)
+- [.env.example](.env.example)
+
+### 6. 참고
+
+- 앱 내부에서는 `site.config.js`가 최종 설정을 조립합니다.
+- 보통 포크 사용자라면 `site.config.js`를 직접 수정할 필요는 없습니다.
+- 글 작성과 수정은 Git이 아니라 Notion에서 하면 됩니다.
 
 ## 10 Steps to build your own morethan-log (by 23.06.23)
 
@@ -63,9 +177,8 @@ Next.js static blog using Notion as a Content Management System (CMS). Supports 
    4. Click `Share` and `Publish` in right top, and check web link. (Copy web link)
    <img src='https://github.com/jhk0530/morethan-log/assets/6457691/886fe4a2-79ca-4dbc-b1e1-93984e7e3f44' width = '500'>
    
-   5. `Modify` **site.config.js** file in **your** forked repo.
-   > 💡 NOTE. I changed **2 RED PART**
-   <img src='https://github.com/jhk0530/morethan-log/assets/6457691/3d9c0da5-92bc-4372-8752-7bfc810b4986' width = '500'>
+   5. `Modify` config files in **your** forked repo.
+   > 💡 NOTE. Update your profile and site values in the `config/` folder.
 
    6. Move and `login` to vercel.
    <img src='https://github.com/jhk0530/morethan-log/assets/6457691/07742ad0-4766-43b0-9ebd-5311f9711bc2' width = '500'>

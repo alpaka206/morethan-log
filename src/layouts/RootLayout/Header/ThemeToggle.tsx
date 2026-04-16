@@ -13,7 +13,11 @@ const ThemeToggle: React.FC<Props> = () => {
   }
 
   return (
-    <StyledWrapper onClick={handleClick}>
+    <StyledWrapper
+      type="button"
+      onClick={handleClick}
+      aria-label={`Switch to ${scheme === "light" ? "dark" : "light"} mode`}
+    >
       <Emoji>{scheme === "light" ? "☀️" : "🌙"}</Emoji>
     </StyledWrapper>
   )
@@ -21,6 +25,6 @@ const ThemeToggle: React.FC<Props> = () => {
 
 export default ThemeToggle
 
-const StyledWrapper = styled.div`
+const StyledWrapper = styled.button`
   cursor: pointer;
 `

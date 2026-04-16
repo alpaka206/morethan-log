@@ -9,8 +9,8 @@ import { TPosts } from "src/types"
 
 const getBlockValue = (block: BlockMap, id: string) =>
   (block?.[id]?.value as any)?.value
-const POSTS_CACHE_TTL = 1000 * 60 * 5
-const RETRY_DELAYS = [1000, 2000, 4000]
+const POSTS_CACHE_TTL = 1000 * 60 * 30
+const RETRY_DELAYS = [2000, 4000, 8000, 16000, 24000]
 
 let cachedPosts: TPosts | null = null
 let cachedAt = 0
@@ -21,16 +21,17 @@ const wait = (ms: number) =>
     setTimeout(resolve, ms)
   })
 
-const isRateLimitError = (error: any) =>
-  error?.code === "ERR_NON_2XX_3XX_RESPONSE" &&
-  `${error?.message || ""}`.includes("429")
+const isRetryableError = (error: any) => {
+  const statusCode = error?.response?.statusCode
+  return [429, 500, 502, 503, 504].includes(statusCode)
+}
 
 const withRetry = async <T>(task: () => Promise<T>) => {
   for (let attempt = 0; attempt <= RETRY_DELAYS.length; attempt++) {
     try {
       return await task()
     } catch (error) {
-      if (!isRateLimitError(error) || attempt === RETRY_DELAYS.length) {
+      if (!isRetryableError(error) || attempt === RETRY_DELAYS.length) {
         throw error
       }
 
@@ -112,7 +113,9 @@ export const getPosts = async () => {
       const properties = (await getPageProperties(pageId, block, schema)) || null
       const blockValue = getBlockValue(block, pageId)
 
-      properties.createdTime = new Date(blockValue?.created_time).toString()
+      properties.createdTime = new Date(
+        blockValue?.created_time || Date.now()
+      ).toISOString()
       properties.fullWidth = blockValue?.format?.page_full_width ?? false
 
       data.push(properties)
