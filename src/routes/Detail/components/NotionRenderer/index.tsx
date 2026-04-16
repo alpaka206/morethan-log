@@ -1,8 +1,13 @@
 import dynamic from "next/dynamic"
 import Image from "next/image"
 import Link from "next/link"
+import { FC, useRef } from "react"
+import styled from "@emotion/styled"
 import useScheme from "src/hooks/useScheme"
+import useRecordMapQuery from "src/hooks/useRecordMapQuery"
+import { joinUrl } from "src/libs/utils"
 import useMermaidEffect from "src/routes/Detail/hooks/useMermaidEffect"
+import usePrismEffect from "src/routes/Detail/hooks/usePrismEffect"
 
 // core styles shared by all of react-notion-x (required)
 import "react-notion-x/src/styles.css"
@@ -11,12 +16,7 @@ import "react-notion-x/src/styles.css"
 import "prismjs/themes/prism-tomorrow.css"
 
 // used for rendering equations (optional)
-
 import "katex/dist/katex.min.css"
-import { FC, useEffect, useState } from "react"
-import styled from "@emotion/styled"
-import useRecordMapQuery from "src/hooks/useRecordMapQuery"
-import { joinUrl } from "src/libs/utils"
 
 const _NotionRenderer = dynamic(
   () => import("react-notion-x").then((m) => m.NotionRenderer),
@@ -24,7 +24,7 @@ const _NotionRenderer = dynamic(
 )
 
 const Code = dynamic(() =>
-  import("react-notion-x/build/third-party/code").then(async (m) => m.Code)
+  import("react-notion-x/build/third-party/code").then((m) => m.Code)
 )
 
 const Collection = dynamic(() =>
@@ -32,15 +32,18 @@ const Collection = dynamic(() =>
     (m) => m.Collection
   )
 )
+
 const Equation = dynamic(() =>
   import("react-notion-x/build/third-party/equation").then((m) => m.Equation)
 )
+
 const Pdf = dynamic(
   () => import("react-notion-x/build/third-party/pdf").then((m) => m.Pdf),
   {
     ssr: false,
   }
 )
+
 const Modal = dynamic(
   () => import("react-notion-x/build/third-party/modal").then((m) => m.Modal),
   {
@@ -55,30 +58,16 @@ type Props = {
 
 const NotionRenderer: FC<Props> = ({ pageId, pageLinkMap = {} }) => {
   const [scheme] = useScheme()
+  const wrapperRef = useRef<HTMLDivElement>(null)
   const {
     data: recordMap,
     isLoading,
     isError,
     refetch,
   } = useRecordMapQuery(pageId)
-  const [showLoadingMessage, setShowLoadingMessage] = useState(false)
 
   useMermaidEffect(recordMap ? pageId : null)
-
-  useEffect(() => {
-    if (!isLoading) {
-      setShowLoadingMessage(false)
-      return
-    }
-
-    const timeoutId = window.setTimeout(() => {
-      setShowLoadingMessage(true)
-    }, 180)
-
-    return () => {
-      window.clearTimeout(timeoutId)
-    }
-  }, [isLoading])
+  usePrismEffect(wrapperRef, recordMap ? pageId : null)
 
   const mapPageUrl = (id?: string) => {
     if (!id) {
@@ -106,14 +95,14 @@ const NotionRenderer: FC<Props> = ({ pageId, pageLinkMap = {} }) => {
 
   if (isLoading || !recordMap) {
     return (
-      <StatusBox data-visible={showLoadingMessage}>
+      <StatusBox data-loading={isLoading}>
         <p>본문을 불러오는 중입니다.</p>
       </StatusBox>
     )
   }
 
   return (
-    <StyledWrapper>
+    <StyledWrapper ref={wrapperRef}>
       <_NotionRenderer
         darkMode={scheme === "dark"}
         recordMap={recordMap}
@@ -135,13 +124,15 @@ const NotionRenderer: FC<Props> = ({ pageId, pageLinkMap = {} }) => {
 export default NotionRenderer
 
 const StyledWrapper = styled.div`
-  /* // TODO: why render? */
+  /* react-notion-x duplicates these properties in page mode. */
   .notion-collection-page-properties {
     display: none !important;
   }
+
   .notion-page {
     padding: 0;
   }
+
   .notion-list {
     width: 100%;
   }
@@ -152,6 +143,7 @@ const StatusBox = styled.div`
   gap: 0.75rem;
   justify-items: start;
   padding: 1rem 0;
+  opacity: 1;
 
   > p {
     margin: 0;
@@ -166,8 +158,15 @@ const StatusBox = styled.div`
     font-weight: 600;
   }
 
-  &[data-visible="false"] {
-    min-height: 1.5rem;
-    visibility: hidden;
+  &[data-loading="true"] {
+    opacity: 0;
+    animation: revealStatus 0.12s ease-out forwards;
+    animation-delay: 180ms;
+  }
+
+  @keyframes revealStatus {
+    to {
+      opacity: 1;
+    }
   }
 `
