@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react"
 import styled from "@emotion/styled"
 import useScheme from "src/hooks/useScheme"
 import { useRouter } from "next/router"
+import { joinUrl } from "src/libs/utils"
 
 type Props = {
   id: string
@@ -47,7 +48,7 @@ const Cusdis: React.FC<Props> = ({ id, slug, title }) => {
             appId: CONFIG.cusdis.config.appid,
             pageId: id,
             pageTitle: title,
-            pageUrl: `${CONFIG.link}/${slug}`,
+            pageUrl: joinUrl(CONFIG.link, slug),
             theme: scheme,
           }}
         />

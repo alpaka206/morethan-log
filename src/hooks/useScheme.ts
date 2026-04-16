@@ -1,10 +1,13 @@
 import { useQuery, useQueryClient } from "@tanstack/react-query"
 import { getCookie, setCookie } from "cookies-next"
 import { useCallback, useEffect } from "react"
+import { CONFIG } from "site.config"
 import { queryKey } from "src/constants/queryKey"
 
 type Scheme = "light" | "dark"
 type SetScheme = (scheme: Scheme) => void
+
+const defaultScheme: Scheme = CONFIG.blog.theme === "dark" ? "dark" : "light"
 
 const useScheme = (): [Scheme, SetScheme] => {
   const queryClient = useQueryClient()
@@ -12,14 +15,14 @@ const useScheme = (): [Scheme, SetScheme] => {
   const { data } = useQuery({
     queryKey: queryKey.scheme(),
     enabled: false,
-    initialData: "light",
+    initialData: defaultScheme,
   })
 
   const scheme = data === "light" ? "light" : "dark"
 
   const setScheme = useCallback(
     (scheme: Scheme) => {
-      setCookie("scheme", scheme)
+      setCookie("scheme", scheme, { sameSite: "lax" })
       queryClient.setQueryData(queryKey.scheme(), scheme)
     },
     [queryClient]
@@ -27,8 +30,11 @@ const useScheme = (): [Scheme, SetScheme] => {
 
   useEffect(() => {
     const saved = getCookie("scheme")
-    setScheme(saved === "light" ? "light" : "dark")
-  }, [setScheme])
+    const initialScheme =
+      saved === "light" || saved === "dark" ? saved : defaultScheme
+
+    queryClient.setQueryData(queryKey.scheme(), initialScheme)
+  }, [queryClient])
 
   return [scheme, setScheme]
 }

@@ -6,7 +6,15 @@ import { CONFIG } from "site.config"
 const useGtagEffect = () => {
   const router = useRouter()
   useEffect(() => {
-    if (!(CONFIG.isProd && CONFIG?.googleAnalytics?.enable)) return
+    if (
+      !(
+        CONFIG.isProd &&
+        CONFIG?.googleAnalytics?.enable &&
+        CONFIG.googleAnalytics.config.measurementId
+      )
+    ) {
+      return
+    }
 
     const handleRouteChange = (url: any) => {
       gtag.pageview(url)

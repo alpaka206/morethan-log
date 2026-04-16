@@ -5,15 +5,14 @@ import CommentBox from "./CommentBox"
 import Category from "src/components/Category"
 import styled from "@emotion/styled"
 import NotionRenderer from "../components/NotionRenderer"
-import usePostQuery from "src/hooks/usePostQuery"
+import { PostDetail as PostDetailType } from "src/types"
 
-type Props = {}
+type Props = {
+  data: PostDetailType
+  pageLinkMap: Record<string, string>
+}
 
-const PostDetail: React.FC<Props> = () => {
-  const data = usePostQuery()
-
-  if (!data) return null
-
+const PostDetail: React.FC<Props> = ({ data, pageLinkMap }) => {
   const category = (data.category && data.category?.[0]) || undefined
 
   return (
@@ -28,7 +27,7 @@ const PostDetail: React.FC<Props> = () => {
         )}
         {data.type[0] === "Post" && <PostHeader data={data} />}
         <div>
-          <NotionRenderer recordMap={data.recordMap} />
+          <NotionRenderer pageId={data.id} pageLinkMap={pageLinkMap} />
         </div>
         {data.type[0] === "Post" && (
           <>

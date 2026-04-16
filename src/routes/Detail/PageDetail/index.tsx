@@ -1,16 +1,17 @@
 import React from "react"
 import styled from "@emotion/styled"
 import NotionRenderer from "../components/NotionRenderer"
-import usePostQuery from "src/hooks/usePostQuery"
-type Props = {}
+import { PostDetail as PostDetailType } from "src/types"
 
-const PageDetail: React.FC<Props> = () => {
-  const data = usePostQuery()
+type Props = {
+  data: PostDetailType
+  pageLinkMap: Record<string, string>
+}
 
-  if (!data) return null
+const PageDetail: React.FC<Props> = ({ data, pageLinkMap }) => {
   return (
     <StyledWrapper>
-      <NotionRenderer recordMap={data.recordMap} />
+      <NotionRenderer pageId={data.id} pageLinkMap={pageLinkMap} />
     </StyledWrapper>
   )
 }

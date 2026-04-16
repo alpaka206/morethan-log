@@ -8,7 +8,7 @@ import { queryKey } from "src/constants/queryKey"
  *  Additionally, verify that the HTML CollectionOf has an array value.
  */
 const waitForMermaid = (interval = 100, timeout = 5000) => {
-  return new Promise<HTMLCollectionOf<Element>>((resolve, reject) => {
+  return new Promise<HTMLCollectionOf<Element> | null>((resolve) => {
     const startTime = Date.now()
     const elements: HTMLCollectionOf<Element> =
       document.getElementsByClassName("language-mermaid")
@@ -17,7 +17,7 @@ const waitForMermaid = (interval = 100, timeout = 5000) => {
       if (mermaid.render !== undefined && elements.length > 0) {
         resolve(elements)
       } else if (Date.now() - startTime >= timeout) {
-        reject(new Error(`mermaid is not defined within the timeout period.`))
+        resolve(null)
       } else {
         setTimeout(checkMerMaidCode, interval)
       }
@@ -25,7 +25,7 @@ const waitForMermaid = (interval = 100, timeout = 5000) => {
     checkMerMaidCode()
   })
 }
-const useMermaidEffect = () => {
+const useMermaidEffect = (trigger?: string | null) => {
   const memoMermaid = useRef<Map<number, string>>(new Map())
 
   const { data, isFetched } = useQuery({
@@ -44,6 +44,8 @@ const useMermaidEffect = () => {
 
     waitForMermaid()
       .then(async (elements) => {
+        if (!elements?.length) return
+
         const promises = Array.from(elements)
           .filter((el) => el.tagName === "PRE")
           .map(async (element, i) => {
@@ -71,10 +73,7 @@ const useMermaidEffect = () => {
           })
         await Promise.all(promises)
       })
-      .catch((error) => {
-        console.warn(error)
-      })
-  }, [data, isFetched])
+  }, [data, isFetched, trigger])
 
   return
 }

@@ -1,6 +1,5 @@
 import { NextPage } from "next"
 import { AppProps } from "next/app"
-import { ExtendedRecordMap } from "notion-types"
 import { ReactElement, ReactNode } from "react"
 
 // TODO: refactor types
@@ -35,9 +34,7 @@ export type TPost = {
   thumbnail?: string
 }
 
-export type PostDetail = TPost & {
-  recordMap: ExtendedRecordMap
-}
+export type PostDetail = TPost
 
 export type TPosts = TPost[]
 

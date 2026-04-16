@@ -7,19 +7,9 @@ class MyDocument extends Document {
       <Html lang={CONFIG.lang}>
         <Head>
           <link rel="icon" href="/favicon.ico" />
-          <link
-            rel="apple-touch-icon"
-            sizes="192x192"
-            href="/apple-touch-icon.png"
-          ></link>
-          <link
-            rel="alternate"
-            type="application/rss+xml"
-            title="RSS 2.0"
-            href="/feed"
-          ></link>
           {/* google search console */}
-          {CONFIG.googleSearchConsole.enable === true && (
+          {CONFIG.googleSearchConsole.enable === true &&
+            CONFIG.googleSearchConsole.config.siteVerification && (
             <>
               <meta
                 name="google-site-verification"
@@ -28,7 +18,8 @@ class MyDocument extends Document {
             </>
           )}
           {/* naver search advisor */}
-          {CONFIG.naverSearchAdvisor.enable === true && (
+          {CONFIG.naverSearchAdvisor.enable === true &&
+            CONFIG.naverSearchAdvisor.config.siteVerification && (
             <>
               <meta
                 name="naver-site-verification"

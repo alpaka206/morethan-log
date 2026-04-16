@@ -8,6 +8,7 @@ import { queryKey } from "src/constants/queryKey"
 import { GetStaticProps } from "next"
 import { dehydrate } from "@tanstack/react-query"
 import { filterPosts } from "src/libs/utils/notion"
+import { joinUrl } from "src/libs/utils"
 
 export const getStaticProps: GetStaticProps = async () => {
   const queryClient = createQueryClient()
@@ -33,7 +34,7 @@ const FeedPage: NextPageWithLayout = () => {
     title: CONFIG.blog.title,
     description: CONFIG.blog.description,
     type: "website",
-    url: CONFIG.link,
+    url: joinUrl(CONFIG.link),
   }
 
   return (

@@ -1,5 +1,9 @@
 import Link from "next/link"
+import { useRouter } from "next/router"
 import { CONFIG } from "site.config"
+import { useCallback, useEffect, useRef } from "react"
+import { useQueryClient } from "@tanstack/react-query"
+import { prefetchRecordMap } from "src/hooks/useRecordMapQuery"
 import { formatDate } from "src/libs/utils"
 import Tag from "../../../components/Tag"
 import { TPost } from "../../../types"
@@ -13,13 +17,55 @@ type Props = {
 
 const PostCard: React.FC<Props> = ({ data }) => {
   const category = (data.category && data.category?.[0]) || undefined
+  const router = useRouter()
+  const queryClient = useQueryClient()
+  const articleRef = useRef<HTMLElement | null>(null)
+  const warmedUpRef = useRef(false)
+
+  const warmDetailPage = useCallback(() => {
+    if (warmedUpRef.current) return
+
+    warmedUpRef.current = true
+    void router.prefetch(`/${data.slug}`)
+    void prefetchRecordMap(queryClient, data.id)
+  }, [data.id, data.slug, queryClient, router])
+
+  useEffect(() => {
+    const target = articleRef.current
+    if (!target || typeof IntersectionObserver === "undefined") return
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const isVisible = entries.some((entry) => entry.isIntersecting)
+        if (!isVisible) return
+
+        warmDetailPage()
+        observer.disconnect()
+      },
+      {
+        rootMargin: "240px 0px",
+      }
+    )
+
+    observer.observe(target)
+
+    return () => {
+      observer.disconnect()
+    }
+  }, [warmDetailPage])
 
   return (
-    <StyledWrapper href={`/${data.slug}`}>
-      <article>
+    <StyledWrapper
+      href={`/${data.slug}`}
+      prefetch={false}
+      onMouseEnter={warmDetailPage}
+      onFocus={warmDetailPage}
+      onTouchStart={warmDetailPage}
+    >
+      <article ref={articleRef}>
         {category && (
           <div className="category">
-            <Category>{category}</Category>
+            <Category readOnly>{category}</Category>
           </div>
         )}
         {data.thumbnail && (
@@ -27,6 +73,7 @@ const PostCard: React.FC<Props> = ({ data }) => {
             <Image
               src={data.thumbnail}
               fill
+              sizes="(min-width: 1024px) 616px, 100vw"
               alt={data.title}
               css={{ objectFit: "cover" }}
             />
@@ -50,7 +97,9 @@ const PostCard: React.FC<Props> = ({ data }) => {
           <div className="tags">
             {data.tags &&
               data.tags.map((tag: string, idx: number) => (
-                <Tag key={idx}>{tag}</Tag>
+                <Tag key={idx} readOnly>
+                  {tag}
+                </Tag>
               ))}
           </div>
         </div>
