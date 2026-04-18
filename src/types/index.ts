@@ -1,6 +1,9 @@
 import { NextPage } from "next"
 import { AppProps } from "next/app"
+import { DehydratedState } from "@tanstack/react-query"
+import { ExtendedRecordMap } from "notion-types"
 import { ReactElement, ReactNode } from "react"
+import { TableOfContentsEntry } from "notion-utils"
 
 // TODO: refactor types
 export type NextPageWithLayout<PageProps = {}> = NextPage<PageProps> & {
@@ -9,6 +12,10 @@ export type NextPageWithLayout<PageProps = {}> = NextPage<PageProps> & {
 
 export type AppPropsWithLayout = AppProps & {
   Component: NextPageWithLayout
+}
+
+export type PagePropsWithDehydratedState = {
+  dehydratedState?: DehydratedState
 }
 
 export type TPostStatus = "Private" | "Public" | "PublicOnDetail"
@@ -46,3 +53,23 @@ export type TCategories = {
 }
 
 export type SchemeType = "light" | "dark"
+
+export type TTableOfContents = TableOfContentsEntry[]
+
+export type TAdjacentPosts = {
+  prev: TPost | null
+  next: TPost | null
+}
+
+export type TStatsBucket = {
+  views: number
+  visitors: number
+}
+
+export type TStatsSummary = {
+  enabled: boolean
+  site: TStatsBucket
+  post?: TStatsBucket
+}
+
+export type TInitialRecordMap = ExtendedRecordMap | null

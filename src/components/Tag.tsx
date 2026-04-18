@@ -11,7 +11,7 @@ const Tag: React.FC<Props> = ({ children, readOnly = false }) => {
   const router = useRouter()
 
   const handleClick = (value: string) => {
-    router.push(`/?tag=${value}`)
+    void router.push(`/?tag=${value}`)
   }
   if (readOnly) {
     return <StyledReadOnly>{children}</StyledReadOnly>

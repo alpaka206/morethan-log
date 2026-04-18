@@ -1,4 +1,5 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
+import { useRouter } from "next/router"
 
 import SearchInput from "./SearchInput"
 import { FeedHeader } from "./FeedHeader"
@@ -12,11 +13,51 @@ import ContactCard from "./ContactCard"
 import PostList from "./PostList"
 import PinnedPosts from "./PostList/PinnedPosts"
 import { HEADER_HEIGHT } from "src/constants/layout"
+import { normalizeQueryValue } from "src/libs/utils"
+import useTrackPageView from "src/hooks/useTrackPageView"
 
 type Props = {}
 
 const Feed: React.FC<Props> = () => {
-  const [q, setQ] = useState("")
+  const router = useRouter()
+  const queryQ = normalizeQueryValue(router.query.q)
+  const [q, setQ] = useState(queryQ)
+
+  useTrackPageView({ pathKey: "home" })
+
+  useEffect(() => {
+    setQ(queryQ)
+  }, [queryQ])
+
+  useEffect(() => {
+    if (!router.isReady) {
+      return
+    }
+
+    const nextQ = q.trim()
+
+    if (nextQ === queryQ) {
+      return
+    }
+
+    const timer = window.setTimeout(() => {
+      void router.replace(
+        {
+          pathname: router.pathname,
+          query: {
+            ...router.query,
+            q: nextQ || undefined,
+          },
+        },
+        undefined,
+        { shallow: true, scroll: false }
+      )
+    }, 180)
+
+    return () => {
+      window.clearTimeout(timer)
+    }
+  }, [q, queryQ, router])
 
   return (
     <StyledWrapper>
