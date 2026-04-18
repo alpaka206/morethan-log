@@ -9,8 +9,10 @@ import { GetStaticProps } from "next"
 import { dehydrate } from "@tanstack/react-query"
 import { filterPosts } from "src/libs/utils/notion"
 import { joinUrl } from "src/libs/utils"
+import { PagePropsWithDehydratedState } from "src/types"
 
-export const getStaticProps: GetStaticProps = async () => {
+export const getStaticProps: GetStaticProps<PagePropsWithDehydratedState> =
+  async () => {
   const queryClient = createQueryClient()
 
   try {
@@ -35,6 +37,23 @@ const FeedPage: NextPageWithLayout = () => {
     description: CONFIG.blog.description,
     type: "website",
     url: joinUrl(CONFIG.link),
+    structuredData: [
+      {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        name: CONFIG.blog.title,
+        description: CONFIG.blog.description,
+        url: joinUrl(CONFIG.link),
+      },
+      {
+        "@context": "https://schema.org",
+        "@type": "Blog",
+        name: CONFIG.blog.title,
+        description: CONFIG.blog.description,
+        url: joinUrl(CONFIG.link),
+        inLanguage: CONFIG.lang,
+      },
+    ],
   }
 
   return (
