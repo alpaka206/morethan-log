@@ -1,5 +1,6 @@
 import { CONFIG } from "site.config"
 import Head from "next/head"
+import { joinUrl } from "src/libs/utils"
 
 export type MetaConfigProps = {
   title: string
@@ -8,12 +9,22 @@ export type MetaConfigProps = {
   date?: string
   image?: string
   url: string
+  keywords?: string[]
+  structuredData?: Record<string, unknown> | Array<Record<string, unknown>>
 }
 
 const MetaConfig: React.FC<MetaConfigProps> = (props) => {
-  const isPost = props.type === "Post"
+  const isPost = props.type.toLowerCase() === "post"
   const ogType = isPost ? "article" : "website"
-  const keywords = CONFIG.seo.keywords?.join(", ")
+  const keywords =
+    props.keywords && props.keywords.length > 0
+      ? props.keywords
+      : CONFIG.seo.keywords || []
+  const structuredData = Array.isArray(props.structuredData)
+    ? props.structuredData
+    : props.structuredData
+      ? [props.structuredData]
+      : []
 
   return (
     <Head>
@@ -21,8 +32,16 @@ const MetaConfig: React.FC<MetaConfigProps> = (props) => {
       <meta name="robots" content="follow, index" />
       <meta charSet="UTF-8" />
       <meta name="description" content={props.description} />
-      {keywords && <meta name="keywords" content={keywords} />}
+      {keywords.length > 0 && (
+        <meta name="keywords" content={keywords.join(", ")} />
+      )}
       <link rel="canonical" href={props.url} />
+      <link
+        rel="alternate"
+        type="application/rss+xml"
+        title={`${CONFIG.blog.title} RSS Feed`}
+        href={joinUrl(CONFIG.link, "feed.xml")}
+      />
       {/* og */}
       <meta property="og:type" content={ogType} />
       <meta property="og:site_name" content={CONFIG.blog.title} />
@@ -41,8 +60,18 @@ const MetaConfig: React.FC<MetaConfigProps> = (props) => {
         <>
           <meta property="article:published_time" content={props.date} />
           <meta property="article:author" content={CONFIG.profile.name} />
+          {keywords.map((keyword) => (
+            <meta key={keyword} property="article:tag" content={keyword} />
+          ))}
         </>
       )}
+      {structuredData.map((item, index) => (
+        <script
+          key={`structured-data-${index}`}
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(item) }}
+        />
+      ))}
     </Head>
   )
 }

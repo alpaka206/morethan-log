@@ -1,22 +1,52 @@
-import useMermaidEffect from "./hooks/useMermaidEffect"
 import PostDetail from "./PostDetail"
 import PageDetail from "./PageDetail"
 import styled from "@emotion/styled"
-import { PostDetail as PostDetailType } from "src/types"
+import {
+  PostDetail as PostDetailType,
+  TAdjacentPosts,
+  TInitialRecordMap,
+  TPost,
+  TTableOfContents,
+} from "src/types"
 
 type Props = {
   data: PostDetailType
   pageLinkMap: Record<string, string>
+  tableOfContents: TTableOfContents
+  readTime: string | null
+  adjacentPosts: TAdjacentPosts
+  relatedPosts: TPost[]
+  initialRecordMap: TInitialRecordMap
 }
 
-const Detail: React.FC<Props> = ({ data, pageLinkMap }) => {
+const Detail: React.FC<Props> = ({
+  data,
+  pageLinkMap,
+  tableOfContents,
+  readTime,
+  adjacentPosts,
+  relatedPosts,
+  initialRecordMap,
+}) => {
   return (
     <StyledWrapper data-type={data.type}>
       {data.type[0] === "Page" && (
-        <PageDetail data={data} pageLinkMap={pageLinkMap} />
+        <PageDetail
+          data={data}
+          pageLinkMap={pageLinkMap}
+          initialRecordMap={initialRecordMap}
+        />
       )}
       {data.type[0] !== "Page" && (
-        <PostDetail data={data} pageLinkMap={pageLinkMap} />
+        <PostDetail
+          data={data}
+          pageLinkMap={pageLinkMap}
+          tableOfContents={tableOfContents}
+          readTime={readTime}
+          adjacentPosts={adjacentPosts}
+          relatedPosts={relatedPosts}
+          initialRecordMap={initialRecordMap}
+        />
       )}
     </StyledWrapper>
   )

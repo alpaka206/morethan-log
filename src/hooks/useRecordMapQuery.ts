@@ -28,9 +28,13 @@ export const createRecordMapQueryOptions = (pageId: string) => ({
 export const prefetchRecordMap = (queryClient: QueryClient, pageId: string) =>
   queryClient.prefetchQuery(createRecordMapQueryOptions(pageId))
 
-const useRecordMapQuery = (pageId: string) =>
+const useRecordMapQuery = (
+  pageId: string,
+  options?: { initialData?: ExtendedRecordMap | null }
+) =>
   useQuery({
     ...createRecordMapQueryOptions(pageId),
+    initialData: options?.initialData || undefined,
     enabled: typeof window !== "undefined" && Boolean(pageId),
   })
 

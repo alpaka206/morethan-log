@@ -1,10 +1,12 @@
 import dynamic from "next/dynamic"
 import Image from "next/image"
 import Link from "next/link"
+import { ExtendedRecordMap } from "notion-types"
 import { FC, useRef } from "react"
 import styled from "@emotion/styled"
 import useScheme from "src/hooks/useScheme"
 import useRecordMapQuery from "src/hooks/useRecordMapQuery"
+import { HEADER_HEIGHT } from "src/constants/layout"
 import { joinUrl } from "src/libs/utils"
 import useMermaidEffect from "src/routes/Detail/hooks/useMermaidEffect"
 import usePrismEffect from "src/routes/Detail/hooks/usePrismEffect"
@@ -54,9 +56,14 @@ const Modal = dynamic(
 type Props = {
   pageId: string
   pageLinkMap?: Record<string, string>
+  initialRecordMap?: ExtendedRecordMap | null
 }
 
-const NotionRenderer: FC<Props> = ({ pageId, pageLinkMap = {} }) => {
+const NotionRenderer: FC<Props> = ({
+  pageId,
+  pageLinkMap = {},
+  initialRecordMap = null,
+}) => {
   const [scheme] = useScheme()
   const wrapperRef = useRef<HTMLDivElement>(null)
   const {
@@ -64,7 +71,7 @@ const NotionRenderer: FC<Props> = ({ pageId, pageLinkMap = {} }) => {
     isLoading,
     isError,
     refetch,
-  } = useRecordMapQuery(pageId)
+  } = useRecordMapQuery(pageId, { initialData: initialRecordMap })
 
   useMermaidEffect(recordMap ? pageId : null)
   usePrismEffect(wrapperRef, recordMap ? pageId : null)
@@ -135,6 +142,13 @@ const StyledWrapper = styled.div`
 
   .notion-list {
     width: 100%;
+  }
+
+  .notion-h,
+  .notion-h1,
+  .notion-h2,
+  .notion-h3 {
+    scroll-margin-top: ${HEADER_HEIGHT + 24}px;
   }
 `
 
