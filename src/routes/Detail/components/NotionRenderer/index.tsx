@@ -150,6 +150,25 @@ const StyledWrapper = styled.div`
   .notion-h3 {
     scroll-margin-top: ${HEADER_HEIGHT + 24}px;
   }
+
+  .notion-asset-wrapper-video {
+    width: 100%;
+    max-width: 100%;
+    margin: 1rem 0 1.5rem;
+  }
+
+  .notion-asset-wrapper-video > div {
+    width: 100% !important;
+    max-width: 100% !important;
+    height: auto !important;
+  }
+
+  .notion-asset-wrapper-video video {
+    display: block;
+    width: 100% !important;
+    max-width: 100%;
+    height: auto !important;
+  }
 `
 
 const StatusBox = styled.div`
