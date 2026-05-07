@@ -18,11 +18,17 @@ const CategorySelect: React.FC<Props> = () => {
     : `${router.query.category || ``}` || DEFAULT_CATEGORY
 
   const handleOptionClick = (category: string) => {
+    const query = { ...router.query }
+
+    if (category === DEFAULT_CATEGORY) {
+      delete query.category
+    } else {
+      query.category = category
+    }
+
     router.push({
-      query: {
-        ...router.query,
-        category,
-      },
+      pathname: router.pathname,
+      query,
     })
   }
   return (
@@ -40,11 +46,11 @@ const CategorySelect: React.FC<Props> = () => {
       </div>
       {opened && (
         <div className="content" role="listbox">
-          {Object.keys(data).map((key, idx) => (
+          {Object.keys(data).map((key) => (
             <button
               type="button"
               className="item"
-              key={idx}
+              key={key}
               role="option"
               aria-selected={currentCategory === key}
               onClick={() => handleOptionClick(key)}

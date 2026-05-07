@@ -1,6 +1,5 @@
 import { Global as _Global, css, useTheme } from "@emotion/react"
 
-import { ThemeProvider as _ThemeProvider } from "@emotion/react"
 import { pretendard } from "src/assets"
 
 export const Global = () => {
@@ -54,6 +53,16 @@ export const Global = () => {
         input {
           all: unset;
           box-sizing: border-box;
+        }
+
+        a:focus-visible,
+        button:focus-visible,
+        input:focus-visible,
+        textarea:focus-visible,
+        [tabindex]:focus-visible {
+          outline: 2px solid ${theme.colors.gray12};
+          outline-offset: 3px;
+          border-radius: 0.5rem;
         }
 
         // init textarea

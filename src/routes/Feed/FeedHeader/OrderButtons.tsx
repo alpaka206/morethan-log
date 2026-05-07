@@ -14,11 +14,17 @@ const OrderButtons: React.FC<Props> = () => {
     : (`${router.query.order || ``}` || "desc") as TOrder
 
   const handleClickOrderBy = (value: TOrder) => {
+    const query = { ...router.query }
+
+    if (value === "desc") {
+      delete query.order
+    } else {
+      query.order = value
+    }
+
     router.push({
-      query: {
-        ...router.query,
-        order: value,
-      },
+      pathname: router.pathname,
+      query,
     })
   }
   return (

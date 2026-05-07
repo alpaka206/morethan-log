@@ -3,6 +3,7 @@ import Image from "next/image"
 import Link from "next/link"
 import { ExtendedRecordMap } from "notion-types"
 import { FC, useRef } from "react"
+import { NotionRenderer as ReactNotionRenderer } from "react-notion-x"
 import styled from "@emotion/styled"
 import useScheme from "src/hooks/useScheme"
 import useRecordMapQuery from "src/hooks/useRecordMapQuery"
@@ -19,11 +20,6 @@ import "prismjs/themes/prism-tomorrow.css"
 
 // used for rendering equations (optional)
 import "katex/dist/katex.min.css"
-
-const _NotionRenderer = dynamic(
-  () => import("react-notion-x").then((m) => m.NotionRenderer),
-  { ssr: false }
-)
 
 const Code = dynamic(() =>
   import("react-notion-x/build/third-party/code").then((m) => m.Code)
@@ -110,7 +106,7 @@ const NotionRenderer: FC<Props> = ({
 
   return (
     <StyledWrapper ref={wrapperRef}>
-      <_NotionRenderer
+      <ReactNotionRenderer
         darkMode={scheme === "dark"}
         recordMap={recordMap}
         components={{

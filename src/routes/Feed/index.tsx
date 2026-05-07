@@ -38,13 +38,18 @@ const Feed: React.FC<Props> = () => {
     }
 
     const timer = window.setTimeout(() => {
+      const query = { ...router.query }
+
+      if (nextQ) {
+        query.q = nextQ
+      } else {
+        delete query.q
+      }
+
       void router.replace(
         {
           pathname: router.pathname,
-          query: {
-            ...router.query,
-            q: nextQ || undefined,
-          },
+          query,
         },
         undefined,
         { shallow: true, scroll: false }
