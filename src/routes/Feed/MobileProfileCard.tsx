@@ -2,15 +2,12 @@ import { CONFIG } from "site.config"
 import Image from "next/image"
 import React from "react"
 import styled from "@emotion/styled"
-import useStatsSummaryQuery from "src/hooks/useStatsSummaryQuery"
 
 type Props = {
   className?: string
 }
 
 const MobileProfileCard: React.FC<Props> = () => {
-  const { data: statsSummary } = useStatsSummaryQuery()
-
   return (
     <StyledWrapper>
       <div className="top">💻 Profile</div>
@@ -28,12 +25,6 @@ const MobileProfileCard: React.FC<Props> = () => {
             <div className="top">{CONFIG.profile.name}</div>
             <div className="mid">{CONFIG.profile.role}</div>
             <div className="btm">{CONFIG.profile.bio}</div>
-            {statsSummary?.enabled && (
-              <div className="stats">
-                <span>{statsSummary.site.views.toLocaleString()} views</span>
-                <span>{statsSummary.site.visitors.toLocaleString()} readers</span>
-              </div>
-            )}
           </div>
         </div>
       </div>
@@ -81,20 +72,6 @@ const StyledWrapper = styled.div`
         > .btm {
           font-size: 0.875rem;
           line-height: 1.25rem;
-        }
-        > .stats {
-          display: flex;
-          flex-wrap: wrap;
-          gap: 0.5rem;
-          margin-top: 0.5rem;
-          font-size: 0.72rem;
-          line-height: 1rem;
-          color: ${({ theme }) => theme.colors.gray10};
-
-          span + span::before {
-            content: "·";
-            margin-right: 0.5rem;
-          }
         }
       }
     }

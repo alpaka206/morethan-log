@@ -8,7 +8,6 @@ import DirectoryPageShell from "src/components/DirectoryPageShell"
 import MetaConfig from "src/components/MetaConfig"
 import { DEFAULT_CATEGORY } from "src/constants"
 import { queryKey } from "src/constants/queryKey"
-import useTrackPageView from "src/hooks/useTrackPageView"
 import { useCategoriesQuery } from "src/hooks/useCategoriesQuery"
 import { createQueryClient } from "src/libs/react-query"
 import { filterPosts } from "src/libs/utils/notion"
@@ -38,8 +37,6 @@ const CategoriesPage: NextPageWithLayout = () => {
   const entries = Object.entries(categories)
     .filter(([category]) => category !== DEFAULT_CATEGORY)
     .sort((a, b) => b[1] - a[1])
-
-  useTrackPageView({ pathKey: "categories" })
 
   return (
     <>

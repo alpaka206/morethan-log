@@ -3,13 +3,10 @@ import Image from "next/image"
 import React from "react"
 import { CONFIG } from "site.config"
 import { Emoji } from "src/components/Emoji"
-import useStatsSummaryQuery from "src/hooks/useStatsSummaryQuery"
 
 type Props = {}
 
 const ProfileCard: React.FC<Props> = () => {
-  const { data: statsSummary } = useStatsSummaryQuery()
-
   return (
     <StyledWrapper>
       <div className="title">
@@ -29,12 +26,6 @@ const ProfileCard: React.FC<Props> = () => {
           <div className=" name">{CONFIG.profile.name}</div>
           <div className="role">{CONFIG.profile.role}</div>
           <div className="bio">{CONFIG.profile.bio}</div>
-          {statsSummary?.enabled && (
-            <div className="stats">
-              <span>{statsSummary.site.views.toLocaleString()} views</span>
-              <span>{statsSummary.site.visitors.toLocaleString()} readers</span>
-            </div>
-          )}
         </div>
       </div>
     </StyledWrapper>
@@ -91,19 +82,6 @@ const StyledWrapper = styled.div`
         font-size: 0.75rem;
         line-height: 1.125rem;
         white-space: pre-line;
-      }
-      .stats {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-        font-size: 0.72rem;
-        line-height: 1rem;
-        color: ${({ theme }) => theme.colors.gray10};
-
-        span + span::before {
-          content: "·";
-          margin-right: 0.5rem;
-        }
       }
     }
   }

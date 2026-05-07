@@ -5,25 +5,12 @@ import { formatDate } from "src/libs/utils"
 import Image from "next/image"
 import React from "react"
 import styled from "@emotion/styled"
-import useStatsSummaryQuery from "src/hooks/useStatsSummaryQuery"
 
 type Props = {
   data: TPost
-  slug: string
 }
 
-const PostHeader: React.FC<Props> = ({ data, slug }) => {
-  const { data: statsSummary } = useStatsSummaryQuery(slug)
-  const postStats = statsSummary?.post
-  const metaItems = [
-    statsSummary?.enabled && postStats
-      ? `${postStats.views.toLocaleString()} views`
-      : null,
-    statsSummary?.enabled && postStats
-      ? `${postStats.visitors.toLocaleString()} readers`
-      : null,
-  ].filter(Boolean)
-
+const PostHeader: React.FC<Props> = ({ data }) => {
   return (
     <StyledWrapper>
       <h1 className="title">{data.title}</h1>
@@ -52,13 +39,6 @@ const PostHeader: React.FC<Props> = ({ data, slug }) => {
               )}
             </div>
           </div>
-          {metaItems.length > 0 && (
-            <div className="stats">
-              {metaItems.map((item) => (
-                <span key={item}>{item}</span>
-              ))}
-            </div>
-          )}
           <div className="mid">
             {data.tags && (
               <div className="tags">
@@ -119,24 +99,6 @@ const StyledWrapper = styled.div`
         @media (min-width: 768px) {
           margin-left: 0;
         }
-      }
-    }
-    > .stats {
-      display: flex;
-      flex-wrap: wrap;
-      margin-bottom: 0.9rem;
-      gap: 0.5rem;
-      font-size: 0.85rem;
-      color: ${({ theme }) => theme.colors.gray10};
-
-      span {
-        display: flex;
-        align-items: center;
-      }
-
-      span + span::before {
-        content: "·";
-        margin-right: 0.5rem;
       }
     }
     > .mid {

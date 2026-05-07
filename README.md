@@ -9,7 +9,6 @@
 - 홈 검색 상태를 URL과 동기화
 - 글 상세에 목차, 읽기 진행바, 읽기 시간, 이전/다음 글, 관련 글 추가
 - 본문 로딩 속도를 개선하기 위해 일부 글은 `recordMap`을 서버에서 미리 내려주도록 최적화
-- Upstash Redis 기반 방문 통계 추가
 - 아카이브, 태그, 카테고리 페이지 추가
 - RSS(`feed.xml`), `sitemap.xml`, 구조화 데이터(JSON-LD) 보강
 - Utterances 댓글 연동
@@ -20,7 +19,6 @@
 - Notion API / `react-notion-x`
 - React Query
 - Vercel
-- Upstash Redis
 
 ## 실행 방법
 
@@ -52,9 +50,6 @@ Copy-Item .env.example .env.local
 ### 선택
 
 - `NEXT_PUBLIC_UTTERANCES_REPO`
-- `UPSTASH_REDIS_REST_URL`
-- `UPSTASH_REDIS_REST_TOKEN`
-- `STATS_SALT`
 - `NEXT_PUBLIC_GOOGLE_MEASUREMENT_ID`
 - `NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION`
 - `NEXT_PUBLIC_NAVER_SITE_VERIFICATION`
@@ -72,9 +67,7 @@ Copy-Item .env.example .env.local
 
 - 글 작성과 수정은 Git이 아니라 Notion에서 합니다.
 - 댓글이 보이지 않으면 `NEXT_PUBLIC_UTTERANCES_REPO` 설정을 먼저 확인하면 됩니다.
-- 방문 통계는 Upstash Redis가 연결되어 있어야 화면에 노출됩니다.
 
 ## 원본 프로젝트
 
 - Original: [morethanmin/morethan-log](https://github.com/morethanmin/morethan-log)
-

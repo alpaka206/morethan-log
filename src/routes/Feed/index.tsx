@@ -14,7 +14,6 @@ import PostList from "./PostList"
 import PinnedPosts from "./PostList/PinnedPosts"
 import { HEADER_HEIGHT } from "src/constants/layout"
 import { normalizeQueryValue } from "src/libs/utils"
-import useTrackPageView from "src/hooks/useTrackPageView"
 
 type Props = {}
 
@@ -22,8 +21,6 @@ const Feed: React.FC<Props> = () => {
   const router = useRouter()
   const queryQ = normalizeQueryValue(router.query.q)
   const [q, setQ] = useState(queryQ)
-
-  useTrackPageView({ pathKey: "home" })
 
   useEffect(() => {
     setQ(queryQ)

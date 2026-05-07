@@ -7,7 +7,6 @@ import { getPosts } from "src/apis"
 import DirectoryPageShell from "src/components/DirectoryPageShell"
 import MetaConfig from "src/components/MetaConfig"
 import { queryKey } from "src/constants/queryKey"
-import useTrackPageView from "src/hooks/useTrackPageView"
 import usePostsQuery from "src/hooks/usePostsQuery"
 import { createQueryClient } from "src/libs/react-query"
 import { filterPosts } from "src/libs/utils/notion"
@@ -36,8 +35,6 @@ const ArchivePage: NextPageWithLayout = () => {
   const posts = usePostsQuery()
   const archive = groupPostsByYear(posts.filter((post) => post.type[0] === "Post"))
   const years = Array.from(archive.entries())
-
-  useTrackPageView({ pathKey: "archive" })
 
   return (
     <>

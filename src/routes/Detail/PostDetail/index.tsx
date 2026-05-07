@@ -14,7 +14,6 @@ import {
 } from "src/types"
 import TableOfContents from "./TableOfContents"
 import ReadingProgressBar from "./ReadingProgressBar"
-import useTrackPageView from "src/hooks/useTrackPageView"
 
 type Props = {
   data: PostDetailType
@@ -34,12 +33,6 @@ const PostDetail: React.FC<Props> = ({
   initialRecordMap,
 }) => {
   const category = (data.category && data.category?.[0]) || undefined
-  const shouldTrackPost = data.type[0] === "Post"
-
-  useTrackPageView({
-    pathKey: shouldTrackPost ? `post:${data.slug}` : `detail:${data.slug}`,
-    slug: shouldTrackPost ? data.slug : undefined,
-  })
 
   return (
     <StyledWrapper>
@@ -52,9 +45,7 @@ const PostDetail: React.FC<Props> = ({
             </Category>
           </div>
         )}
-        {data.type[0] === "Post" && (
-          <PostHeader data={data} slug={data.slug} />
-        )}
+        {data.type[0] === "Post" && <PostHeader data={data} />}
         {tableOfContents.length > 0 && data.type[0] === "Post" && (
           <div className="toc">
             <TableOfContents entries={tableOfContents} />

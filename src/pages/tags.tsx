@@ -7,7 +7,6 @@ import { getPosts } from "src/apis"
 import DirectoryPageShell from "src/components/DirectoryPageShell"
 import MetaConfig from "src/components/MetaConfig"
 import { queryKey } from "src/constants/queryKey"
-import useTrackPageView from "src/hooks/useTrackPageView"
 import { useTagsQuery } from "src/hooks/useTagsQuery"
 import { createQueryClient } from "src/libs/react-query"
 import { filterPosts } from "src/libs/utils/notion"
@@ -35,8 +34,6 @@ export const getStaticProps: GetStaticProps<PagePropsWithDehydratedState> =
 const TagsPage: NextPageWithLayout = () => {
   const tags = useTagsQuery()
   const tagEntries = Object.entries(tags).sort((a, b) => b[1] - a[1])
-
-  useTrackPageView({ pathKey: "tags" })
 
   return (
     <>
