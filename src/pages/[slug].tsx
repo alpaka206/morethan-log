@@ -30,6 +30,32 @@ const filter: FilterPostsOptions = {
 const PREBUILT_POST_COUNT = 20
 const INLINE_RECORD_MAP_LIMIT = 120_000
 
+const toIsoString = (value?: string) => {
+  if (!value) {
+    return undefined
+  }
+
+  const time = Date.parse(value)
+
+  if (Number.isNaN(time)) {
+    return undefined
+  }
+
+  return new Date(time).toISOString()
+}
+
+const toAbsoluteUrl = (url?: string) => {
+  if (!url) {
+    return undefined
+  }
+
+  if (/^https?:\/\//.test(url)) {
+    return url
+  }
+
+  return joinUrl(CONFIG.link, url)
+}
+
 type DetailPageProps = {
   post: PostDetail | null
   pageLinkMap: Record<string, string>
@@ -126,20 +152,26 @@ const DetailPage: NextPageWithLayout<DetailPageProps> = ({
 }) => {
   if (!post) return <CustomError />
 
-  const image = post.thumbnail ?? buildOgImageUrl(post.title)
-  const date = post.date?.start_date || post.createdTime || ""
+  const image = toAbsoluteUrl(post.thumbnail ?? buildOgImageUrl(post.title))
+  const publishedAt =
+    toIsoString(post.date?.start_date) || toIsoString(post.createdTime)
+  const postType = post.type[0]
   const category = post.category?.[0]
   const keywords = [...(post.tags || []), ...(category ? [category] : [])]
   const url = joinUrl(CONFIG.link, post.slug)
+  const description = post.summary?.trim() || CONFIG.blog.description
+
+  if (!postType) return <CustomError />
 
   const meta = {
     title: post.title,
-    date: new Date(date).toISOString(),
-    image,
-    description: post.summary || "",
-    type: post.type[0],
+    description,
+    type: postType,
     url,
     keywords,
+    ...(image ? { image } : {}),
+    ...(image ? { imageAlt: post.title } : {}),
+    ...(publishedAt ? { date: publishedAt, modifiedDate: publishedAt } : {}),
     structuredData: [
       {
         "@context": "https://schema.org",
@@ -169,14 +201,15 @@ const DetailPage: NextPageWithLayout<DetailPageProps> = ({
           },
         ],
       },
-      post.type[0] === "Post"
+      postType === "Post"
         ? {
             "@context": "https://schema.org",
             "@type": "BlogPosting",
             headline: post.title,
-            description: post.summary || CONFIG.blog.description,
+            description,
             image: image ? [image] : undefined,
-            datePublished: new Date(date).toISOString(),
+            datePublished: publishedAt,
+            dateModified: publishedAt,
             author: {
               "@type": "Person",
               name: post.author?.[0]?.name || CONFIG.profile.name,
@@ -184,7 +217,7 @@ const DetailPage: NextPageWithLayout<DetailPageProps> = ({
             publisher: {
               "@type": "Person",
               name: CONFIG.profile.name,
-              image: CONFIG.profile.image,
+              image: toAbsoluteUrl(CONFIG.profile.image),
             },
             mainEntityOfPage: url,
             articleSection: category,
@@ -194,7 +227,7 @@ const DetailPage: NextPageWithLayout<DetailPageProps> = ({
             "@context": "https://schema.org",
             "@type": "WebPage",
             name: post.title,
-            description: post.summary || CONFIG.blog.description,
+            description,
             url,
           },
     ],
