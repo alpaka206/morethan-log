@@ -1,14 +1,66 @@
 import { CONFIG } from "site.config"
 import { NotionAPI } from "notion-client"
 import { idToUuid } from "notion-utils"
-import { BlockMap, ExtendedRecordMap } from "notion-types"
+import {
+  BlockMap,
+  CollectionPropertySchemaMap,
+  ExtendedRecordMap,
+} from "notion-types"
 
 import getAllPageIds from "src/libs/utils/notion/getAllPageIds"
 import getPageProperties from "src/libs/utils/notion/getPageProperties"
 import { TPosts } from "src/types"
 
+type SortablePostMetadata = Record<string, unknown> & {
+  date?: {
+    start_date?: string
+  }
+  createdTime?: string
+}
+
+type NotionBlockValue = {
+  type?: string
+  created_time?: number
+  format?: {
+    page_full_width?: boolean
+  }
+}
+
+type NotionCollection = {
+  value?: {
+    id?: string
+    schema?: CollectionPropertySchemaMap
+  }
+}
+
+type NotionCollectionView = {
+  value?: Parameters<NotionAPI["getCollectionData"]>[2] & {
+    id?: string
+  }
+}
+
 const getBlockValue = (block: BlockMap, id: string) =>
-  (block?.[id]?.value as any)?.value
+  (block?.[id]?.value as { value?: NotionBlockValue } | undefined)?.value
+
+const getFirstCollection = (response: ExtendedRecordMap) =>
+  Object.values(response.collection || {})[0]?.value as
+    | NotionCollection
+    | undefined
+
+const getFirstCollectionView = (response: ExtendedRecordMap) =>
+  Object.values(response.collection_view || {})[0]?.value as
+    | NotionCollectionView
+    | undefined
+
+const getNotionPageId = () => {
+  const pageId = CONFIG.notionConfig.pageId
+
+  if (!pageId) {
+    throw new Error("NOTION_PAGE_ID is required")
+  }
+
+  return pageId
+}
 const POSTS_CACHE_TTL = 1000 * 60 * 30
 const RETRY_DELAYS = [2000, 4000, 8000, 16000, 24000]
 
@@ -21,9 +73,13 @@ const wait = (ms: number) =>
     setTimeout(resolve, ms)
   })
 
-const isRetryableError = (error: any) => {
-  const statusCode = error?.response?.statusCode
-  return [429, 500, 502, 503, 504].includes(statusCode)
+const isRetryableError = (error: unknown) => {
+  const statusCode = (error as { response?: { statusCode?: number } }).response
+    ?.statusCode
+  return (
+    typeof statusCode === "number" &&
+    [429, 500, 502, 503, 504].includes(statusCode)
+  )
 }
 
 const withRetry = async <T>(task: () => Promise<T>) => {
@@ -35,7 +91,7 @@ const withRetry = async <T>(task: () => Promise<T>) => {
         throw error
       }
 
-      await wait(RETRY_DELAYS[attempt])
+      await wait(RETRY_DELAYS[attempt]!)
     }
   }
 
@@ -50,9 +106,8 @@ const hydrateCollectionRecordMap = async (
     return response.block
   }
 
-  const collection = Object.values(response.collection || {})[0]?.value as any
-  const collectionView = Object.values(response.collection_view || {})[0]
-    ?.value as any
+  const collection = getFirstCollection(response)
+  const collectionView = getFirstCollectionView(response)
   const collectionId = collection?.value?.id
   const view = collectionView?.value
   const viewId = view?.id
@@ -87,14 +142,18 @@ export const getPosts = async () => {
   }
 
   inflightPostsRequest = (async () => {
-    let id = CONFIG.notionConfig.pageId as string
+    let id = getNotionPageId()
     const api = new NotionAPI()
 
     const response = await withRetry(() => api.getPage(id))
     id = idToUuid(id)
-    const collection = Object.values(response.collection)[0]?.value as any
+    const collection = getFirstCollection(response)
     const block = await hydrateCollectionRecordMap(api, response)
     const schema = collection?.value?.schema
+
+    if (!schema) {
+      return []
+    }
 
     const rawMetadata = getBlockValue(block, id)
 
@@ -106,10 +165,9 @@ export const getPosts = async () => {
     }
 
     const pageIds = getAllPageIds(response)
-    const data = []
+    const data: SortablePostMetadata[] = []
 
-    for (let i = 0; i < pageIds.length; i++) {
-      const pageId = pageIds[i]
+    for (const pageId of pageIds) {
       const properties = (await getPageProperties(pageId, block, schema)) || null
       const blockValue = getBlockValue(block, pageId)
 
@@ -121,9 +179,9 @@ export const getPosts = async () => {
       data.push(properties)
     }
 
-    data.sort((a: any, b: any) => {
-      const dateA = new Date(a?.date?.start_date || a.createdTime).getTime()
-      const dateB = new Date(b?.date?.start_date || b.createdTime).getTime()
+    data.sort((a, b) => {
+      const dateA = new Date(a?.date?.start_date || a.createdTime || 0).getTime()
+      const dateB = new Date(b?.date?.start_date || b.createdTime || 0).getTime()
       return dateB - dateA
     })
 

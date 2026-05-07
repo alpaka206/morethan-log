@@ -9,16 +9,19 @@ const initialOption: FilterPostsOptions = {
   acceptStatus: ["Public"],
   acceptType: ["Post"],
 }
-const current = new Date()
-const tomorrow = new Date(current)
-tomorrow.setDate(tomorrow.getDate() + 1)
-tomorrow.setHours(0, 0, 0, 0)
+const getTomorrowStart = () => {
+  const tomorrow = new Date()
+  tomorrow.setDate(tomorrow.getDate() + 1)
+  tomorrow.setHours(0, 0, 0, 0)
+  return tomorrow
+}
 
 export function filterPosts(
   posts: TPosts,
   options: FilterPostsOptions = initialOption
 ) {
   const { acceptStatus = ["Public"], acceptType = ["Post"] } = options
+  const tomorrow = getTomorrowStart()
   const filteredPosts = posts
     // filter data
     .filter((post) => {
@@ -29,12 +32,12 @@ export function filterPosts(
     // filter status
     .filter((post) => {
       const postStatus = post.status[0]
-      return acceptStatus.includes(postStatus)
+      return postStatus ? acceptStatus.includes(postStatus) : false
     })
     // filter type
     .filter((post) => {
       const postType = post.type[0]
-      return acceptType.includes(postType)
+      return postType ? acceptType.includes(postType) : false
     })
   return filteredPosts
 }

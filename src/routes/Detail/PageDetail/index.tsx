@@ -20,7 +20,7 @@ const PageDetail: React.FC<Props> = ({
       <NotionRenderer
         pageId={data.id}
         pageLinkMap={pageLinkMap}
-        initialRecordMap={initialRecordMap}
+        initialRecordMap={initialRecordMap ?? null}
       />
     </StyledWrapper>
   )

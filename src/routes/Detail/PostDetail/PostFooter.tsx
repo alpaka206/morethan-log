@@ -49,7 +49,6 @@ type PostLinkCardProps = {
   label: string
   post: TPost
   compact?: boolean
-  align?: "left" | "right"
 }
 
 const PostLinkCard: React.FC<PostLinkCardProps> = ({

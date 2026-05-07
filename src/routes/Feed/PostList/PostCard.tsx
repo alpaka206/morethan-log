@@ -1,9 +1,7 @@
 import Link from "next/link"
 import { useRouter } from "next/router"
 import { CONFIG } from "site.config"
-import { useCallback, useEffect, useRef } from "react"
-import { useQueryClient } from "@tanstack/react-query"
-import { prefetchRecordMap } from "src/hooks/useRecordMapQuery"
+import { useCallback, useRef } from "react"
 import { formatDate } from "src/libs/utils"
 import Tag from "../../../components/Tag"
 import { TPost } from "../../../types"
@@ -18,8 +16,6 @@ type Props = {
 const PostCard: React.FC<Props> = ({ data }) => {
   const category = (data.category && data.category?.[0]) || undefined
   const router = useRouter()
-  const queryClient = useQueryClient()
-  const articleRef = useRef<HTMLElement | null>(null)
   const warmedUpRef = useRef(false)
 
   const warmDetailPage = useCallback(() => {
@@ -27,32 +23,7 @@ const PostCard: React.FC<Props> = ({ data }) => {
 
     warmedUpRef.current = true
     void router.prefetch(`/${data.slug}`)
-    void prefetchRecordMap(queryClient, data.id)
-  }, [data.id, data.slug, queryClient, router])
-
-  useEffect(() => {
-    const target = articleRef.current
-    if (!target || typeof IntersectionObserver === "undefined") return
-
-    const observer = new IntersectionObserver(
-      (entries) => {
-        const isVisible = entries.some((entry) => entry.isIntersecting)
-        if (!isVisible) return
-
-        warmDetailPage()
-        observer.disconnect()
-      },
-      {
-        rootMargin: "240px 0px",
-      }
-    )
-
-    observer.observe(target)
-
-    return () => {
-      observer.disconnect()
-    }
-  }, [warmDetailPage])
+  }, [data.slug, router])
 
   return (
     <StyledWrapper
@@ -62,7 +33,7 @@ const PostCard: React.FC<Props> = ({ data }) => {
       onFocus={warmDetailPage}
       onTouchStart={warmDetailPage}
     >
-      <article ref={articleRef}>
+      <article>
         {category && (
           <div className="category">
             <Category readOnly>{category}</Category>
@@ -96,8 +67,8 @@ const PostCard: React.FC<Props> = ({ data }) => {
           </div>
           <div className="tags">
             {data.tags &&
-              data.tags.map((tag: string, idx: number) => (
-                <Tag key={idx} readOnly>
+              data.tags.map((tag: string) => (
+                <Tag key={tag} readOnly>
                   {tag}
                 </Tag>
               ))}

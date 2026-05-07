@@ -20,8 +20,8 @@ const Utterances: React.FC = () => {
     script.setAttribute("issue-term", "pathname")
     script.setAttribute("theme", theme)
     const config: Record<string, string> = CONFIG.utterances.config
-    Object.keys(config).forEach((key) => {
-      script.setAttribute(key, config[key])
+    Object.entries(config).forEach(([key, value]) => {
+      script.setAttribute(key, value)
     })
     anchor.appendChild(script)
     return () => {

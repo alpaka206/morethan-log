@@ -33,21 +33,31 @@ const scheduleRequest = async <T>(task: () => Promise<T>) => {
   return nextRequest
 }
 
-const isRetryableError = (error: any) => {
-  const statusCode = error?.response?.statusCode
-  return [429, 500, 502, 503, 504].includes(statusCode)
+const isRetryableError = (error: unknown) => {
+  const statusCode = (error as { response?: { statusCode?: number } }).response
+    ?.statusCode
+  return (
+    typeof statusCode === "number" &&
+    [429, 500, 502, 503, 504].includes(statusCode)
+  )
 }
 
-const unwrapTable = (table?: Record<string, any>) => {
+const unwrapTable = (table?: Record<string, unknown>) => {
   if (!table) {
     return table
   }
 
   return Object.fromEntries(
-    Object.entries(table).map(([key, entry]) => [
-      key,
-      entry?.value?.value ? { ...entry, value: entry.value.value } : entry,
-    ])
+    Object.entries(table).map(([key, entry]) => {
+      const wrappedEntry = entry as { value?: { value?: unknown } }
+
+      return [
+        key,
+        wrappedEntry.value?.value
+          ? { ...wrappedEntry, value: wrappedEntry.value.value }
+          : entry,
+      ]
+    })
   )
 }
 
@@ -93,7 +103,7 @@ export const getRecordMap = async (pageId: string) => {
           throw error
         }
 
-        await wait(RETRY_DELAYS[attempt])
+        await wait(RETRY_DELAYS[attempt]!)
       }
     }
 

@@ -16,9 +16,10 @@ const PostList: React.FC<Props> = ({ q }) => {
   const currentTag = Array.isArray(router.query.tag)
     ? router.query.tag[0]
     : `${router.query.tag || ``}` || undefined
-  const currentCategory = Array.isArray(router.query.category)
-    ? router.query.category[0]
-    : `${router.query.category || ``}` || DEFAULT_CATEGORY
+  const currentCategory =
+    (Array.isArray(router.query.category)
+      ? router.query.category[0]
+      : `${router.query.category || ``}`) || DEFAULT_CATEGORY
   const currentOrder = Array.isArray(router.query.order)
     ? router.query.order[0]
     : `${router.query.order || ``}` || "desc"
@@ -28,9 +29,9 @@ const PostList: React.FC<Props> = ({ q }) => {
       filterPosts({
         posts: data,
         q,
-        tag: currentTag,
         category: currentCategory,
         order: currentOrder === "asc" ? "asc" : "desc",
+        ...(currentTag ? { tag: currentTag } : {}),
       }),
     [currentCategory, currentOrder, currentTag, data, q]
   )

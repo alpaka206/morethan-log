@@ -4,20 +4,20 @@ import { COLOR_SET, CUSTOM_COLOR_SET } from "./constants"
 import styled from "@emotion/styled"
 import { colors } from "src/styles"
 
-export const getColorClassByName = (name: string): string => {
-  if (CUSTOM_COLOR_SET[name]) {
-    return CUSTOM_COLOR_SET[name]
+const getColorClassByName = (name: string): string => {
+  const customColor = CUSTOM_COLOR_SET[name]
+
+  if (customColor) {
+    return customColor
   }
 
   try {
     let sum = 0
     name.split("").forEach((alphabet) => (sum = sum + alphabet.charCodeAt(0)))
-    const colorKey = sum
-      .toString(16)
-      ?.[sum.toString(16).length - 1].toUpperCase()
-    return COLOR_SET[colorKey]
+    const colorKey = sum.toString(16).slice(-1).toUpperCase()
+    return COLOR_SET[colorKey] ?? COLOR_SET[0] ?? colors.dark.gray1
   } catch {
-    return COLOR_SET[0]
+    return COLOR_SET[0] ?? colors.dark.gray1
   }
 }
 

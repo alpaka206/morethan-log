@@ -20,9 +20,9 @@ const ServiceCard: React.FC = () => {
         <Emoji>🌟</Emoji> Others
       </StyledTitle>
       <StyledWrapper>
-        {projects?.map((project, idx) => (
+        {projects?.map((project) => (
           <a
-            key={idx}
+            key={`${project.name}-${project.href}`}
             href={`${project.href}`}
             rel="noreferrer"
             target="_blank"

@@ -9,11 +9,7 @@ export function getAllSelectItemsFromPosts(
   const itemObj: { [itemName: string]: number } = {}
   items.forEach((item) => {
     if (!item) return
-    if (item in itemObj) {
-      itemObj[item]++
-    } else {
-      itemObj[item] = 1
-    }
+    itemObj[item] = (itemObj[item] ?? 0) + 1
   })
   return itemObj
 }

@@ -5,14 +5,13 @@ import {
 import { ExtendedRecordMap, PageBlock } from "notion-types"
 import { CONFIG } from "site.config"
 import { TAdjacentPosts, TPost, TPosts } from "src/types"
-import { joinUrl } from "./index"
 
 const OG_TITLE_PLACEHOLDERS = [/\{title\}/g, /\{\{title\}\}/g]
 
-export const getPostDateValue = (post: TPost) =>
+const getPostDateValue = (post: TPost) =>
   new Date(post.date?.start_date || post.createdTime).getTime()
 
-export const sortPostsByDate = (posts: TPosts) =>
+const sortPostsByDate = (posts: TPosts) =>
   [...posts].sort((a, b) => getPostDateValue(b) - getPostDateValue(a))
 
 export const buildOgImageUrl = (title: string) => {
@@ -46,6 +45,10 @@ const getPageBlock = (recordMap: ExtendedRecordMap, pageId: string) => {
   }
 
   const [firstBlockId] = Object.keys(recordMap.block || {})
+  if (!firstBlockId) {
+    return null
+  }
+
   return (recordMap.block?.[firstBlockId]?.value as PageBlock | undefined) || null
 }
 
@@ -131,8 +134,6 @@ export const groupPostsByYear = (posts: TPosts) => {
 
   return grouped
 }
-
-export const buildPostUrl = (slug: string) => joinUrl(CONFIG.link, slug)
 
 export const normalizeQueryValue = (value: string | string[] | undefined) =>
   Array.isArray(value) ? value[0] || "" : value || ""

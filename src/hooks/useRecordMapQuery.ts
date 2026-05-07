@@ -1,4 +1,4 @@
-import { QueryClient, useQuery } from "@tanstack/react-query"
+import { useQuery } from "@tanstack/react-query"
 import { ExtendedRecordMap } from "notion-types"
 import { queryKey } from "src/constants/queryKey"
 
@@ -6,7 +6,7 @@ type RecordMapResponse = {
   recordMap: ExtendedRecordMap
 }
 
-export const fetchRecordMap = async (pageId: string) => {
+const fetchRecordMap = async (pageId: string) => {
   const response = await fetch(`/api/notion/${pageId}`)
 
   if (!response.ok) {
@@ -17,16 +17,13 @@ export const fetchRecordMap = async (pageId: string) => {
   return data.recordMap
 }
 
-export const createRecordMapQueryOptions = (pageId: string) => ({
+const createRecordMapQueryOptions = (pageId: string) => ({
   queryKey: queryKey.recordMap(pageId),
   queryFn: () => fetchRecordMap(pageId),
   staleTime: 1000 * 60 * 10,
   cacheTime: 1000 * 60 * 30,
   retry: 2,
 })
-
-export const prefetchRecordMap = (queryClient: QueryClient, pageId: string) =>
-  queryClient.prefetchQuery(createRecordMapQueryOptions(pageId))
 
 const useRecordMapQuery = (
   pageId: string,
