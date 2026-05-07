@@ -10,14 +10,12 @@ import useStatsSummaryQuery from "src/hooks/useStatsSummaryQuery"
 type Props = {
   data: TPost
   slug: string
-  readTime: string | null
 }
 
-const PostHeader: React.FC<Props> = ({ data, slug, readTime }) => {
+const PostHeader: React.FC<Props> = ({ data, slug }) => {
   const { data: statsSummary } = useStatsSummaryQuery(slug)
   const postStats = statsSummary?.post
   const metaItems = [
-    readTime,
     statsSummary?.enabled && postStats
       ? `${postStats.views.toLocaleString()} views`
       : null,

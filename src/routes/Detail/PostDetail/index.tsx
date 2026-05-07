@@ -20,7 +20,6 @@ type Props = {
   data: PostDetailType
   pageLinkMap: Record<string, string>
   tableOfContents: TTableOfContents
-  readTime: string | null
   adjacentPosts: TAdjacentPosts
   relatedPosts: TPost[]
   initialRecordMap: TInitialRecordMap
@@ -30,7 +29,6 @@ const PostDetail: React.FC<Props> = ({
   data,
   pageLinkMap,
   tableOfContents,
-  readTime,
   adjacentPosts,
   relatedPosts,
   initialRecordMap,
@@ -55,7 +53,7 @@ const PostDetail: React.FC<Props> = ({
           </div>
         )}
         {data.type[0] === "Post" && (
-          <PostHeader data={data} slug={data.slug} readTime={readTime} />
+          <PostHeader data={data} slug={data.slug} />
         )}
         {tableOfContents.length > 0 && data.type[0] === "Post" && (
           <div className="toc">

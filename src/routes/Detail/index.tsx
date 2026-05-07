@@ -13,7 +13,6 @@ type Props = {
   data: PostDetailType
   pageLinkMap: Record<string, string>
   tableOfContents: TTableOfContents
-  readTime: string | null
   adjacentPosts: TAdjacentPosts
   relatedPosts: TPost[]
   initialRecordMap: TInitialRecordMap
@@ -23,7 +22,6 @@ const Detail: React.FC<Props> = ({
   data,
   pageLinkMap,
   tableOfContents,
-  readTime,
   adjacentPosts,
   relatedPosts,
   initialRecordMap,
@@ -42,7 +40,6 @@ const Detail: React.FC<Props> = ({
           data={data}
           pageLinkMap={pageLinkMap}
           tableOfContents={tableOfContents}
-          readTime={readTime}
           adjacentPosts={adjacentPosts}
           relatedPosts={relatedPosts}
           initialRecordMap={initialRecordMap}

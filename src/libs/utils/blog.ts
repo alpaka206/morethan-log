@@ -1,5 +1,4 @@
 import {
-  estimatePageReadTimeAsHumanizedString,
   getPageTableOfContents,
   TableOfContentsEntry,
 } from "notion-utils"
@@ -61,22 +60,6 @@ export const getPostTableOfContents = (
   }
 
   return getPageTableOfContents(pageBlock, recordMap)
-}
-
-export const getPostReadTime = (
-  recordMap: ExtendedRecordMap,
-  pageId: string
-) => {
-  const pageBlock = getPageBlock(recordMap, pageId)
-
-  if (!pageBlock) {
-    return null
-  }
-
-  return estimatePageReadTimeAsHumanizedString(pageBlock, recordMap, {
-    wordsPerMinute: 220,
-    imageReadTimeInSeconds: 10,
-  })
 }
 
 export const getAdjacentPosts = (posts: TPosts, targetPost: TPost): TAdjacentPosts => {

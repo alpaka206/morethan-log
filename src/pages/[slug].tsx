@@ -5,7 +5,6 @@ import MetaConfig from "src/components/MetaConfig"
 import {
   buildOgImageUrl,
   getAdjacentPosts,
-  getPostReadTime,
   getPostTableOfContents,
   getRelatedPosts,
   joinUrl,
@@ -35,7 +34,6 @@ type DetailPageProps = {
   post: PostDetail | null
   pageLinkMap: Record<string, string>
   tableOfContents: TTableOfContents
-  readTime: string | null
   adjacentPosts: TAdjacentPosts
   relatedPosts: TPost[]
   initialRecordMap: TInitialRecordMap
@@ -79,7 +77,6 @@ export const getStaticProps: GetStaticProps<DetailPageProps> = async (
     }
 
     let tableOfContents: TTableOfContents = []
-    let readTime: string | null = null
     let adjacentPosts: TAdjacentPosts = { prev: null, next: null }
     let relatedPosts: TPost[] = []
     let initialRecordMap: TInitialRecordMap = null
@@ -87,10 +84,6 @@ export const getStaticProps: GetStaticProps<DetailPageProps> = async (
     try {
       const recordMap = await getRecordMap(postDetail.id)
       tableOfContents = getPostTableOfContents(recordMap, postDetail.id)
-      readTime =
-        postDetail.type[0] === "Post"
-          ? getPostReadTime(recordMap, postDetail.id)
-          : null
       if (
         Buffer.byteLength(JSON.stringify(recordMap), "utf8") <=
         INLINE_RECORD_MAP_LIMIT
@@ -111,7 +104,6 @@ export const getStaticProps: GetStaticProps<DetailPageProps> = async (
         post: postDetail,
         pageLinkMap,
         tableOfContents,
-        readTime,
         adjacentPosts,
         relatedPosts,
         initialRecordMap,
@@ -128,7 +120,6 @@ const DetailPage: NextPageWithLayout<DetailPageProps> = ({
   post,
   pageLinkMap,
   tableOfContents,
-  readTime,
   adjacentPosts,
   relatedPosts,
   initialRecordMap,
@@ -216,7 +207,6 @@ const DetailPage: NextPageWithLayout<DetailPageProps> = ({
         data={post}
         pageLinkMap={pageLinkMap}
         tableOfContents={tableOfContents}
-        readTime={readTime}
         adjacentPosts={adjacentPosts}
         relatedPosts={relatedPosts}
         initialRecordMap={initialRecordMap}
