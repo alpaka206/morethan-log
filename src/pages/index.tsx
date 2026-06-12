@@ -52,6 +52,11 @@ const FeedPage: NextPageWithLayout = () => {
         description: CONFIG.blog.description,
         url: joinUrl(CONFIG.link),
         inLanguage: CONFIG.lang,
+        author: {
+          "@type": "Person",
+          name: CONFIG.profile.name,
+          url: `https://github.com/${CONFIG.profile.github}`,
+        },
       },
     ],
   }

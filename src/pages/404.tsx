@@ -18,10 +18,11 @@ NotFoundPage.getLayout = (page) => {
     <>
       <MetaConfig
         {...{
-          title: CONFIG.blog.title,
+          title: `404 | ${CONFIG.blog.title}`,
           description: CONFIG.blog.description,
           type: "website",
           url: joinUrl(CONFIG.link),
+          robots: "noindex, follow",
         }}
       />
       {page}

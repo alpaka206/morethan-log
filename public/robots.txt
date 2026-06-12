@@ -1,9 +1,5 @@
-# *
 User-agent: *
 Allow: /
+Disallow: /api/
 
-# Host
-Host: https://alpaka206.vercel.app/
-
-# Sitemaps
 Sitemap: https://alpaka206.vercel.app/sitemap.xml

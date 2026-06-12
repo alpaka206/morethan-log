@@ -12,6 +12,7 @@ type MetaConfigProps = {
   imageAlt?: string
   url: string
   keywords?: string[]
+  robots?: string
   structuredData?: Record<string, unknown> | Array<Record<string, unknown>>
 }
 
@@ -30,17 +31,19 @@ const MetaConfig: React.FC<MetaConfigProps> = (props) => {
     : props.structuredData
       ? [props.structuredData]
       : []
+  const robots = props.robots || "index, follow, max-image-preview:large"
+  const isNoIndex = robots.includes("noindex")
 
   return (
     <Head>
       <title>{props.title}</title>
-      <meta name="robots" content="follow, index" />
+      <meta name="robots" content={robots} />
       <meta charSet="UTF-8" />
       <meta name="description" content={description} />
       {keywords.length > 0 && (
         <meta name="keywords" content={keywords.join(", ")} />
       )}
-      <link rel="canonical" href={props.url} />
+      {!isNoIndex && <link rel="canonical" href={props.url} />}
       <link
         rel="alternate"
         type="application/rss+xml"
@@ -53,7 +56,9 @@ const MetaConfig: React.FC<MetaConfigProps> = (props) => {
       <meta property="og:title" content={props.title} />
       <meta property="og:description" content={description} />
       <meta property="og:url" content={props.url} />
-      {CONFIG.lang && <meta property="og:locale" content={CONFIG.lang} />}
+      {CONFIG.lang && (
+        <meta property="og:locale" content={CONFIG.lang.replace("-", "_")} />
+      )}
       {props.image && <meta property="og:image" content={props.image} />}
       {props.image && <meta property="og:image:alt" content={imageAlt} />}
       {/* twitter */}

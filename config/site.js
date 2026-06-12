@@ -1,6 +1,7 @@
 const site = {
   title: "alpaka206",
-  description: "welcome to alpaka206's blog!",
+  description:
+    "프론트엔드 개발자 alpaka206의 기술 블로그. React, Next.js, 상태 관리, 코딩 테스트 풀이와 개발 경험을 기록합니다.",
   theme: "light",
   url: "https://alpaka206.vercel.app",
   since: 2024,

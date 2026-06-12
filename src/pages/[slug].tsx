@@ -28,7 +28,9 @@ const filter: FilterPostsOptions = {
 }
 
 const PREBUILT_POST_COUNT = 20
-const INLINE_RECORD_MAP_LIMIT = 120_000
+// 본문이 SSR HTML에 들어가야 검색엔진이 내용을 읽을 수 있으므로,
+// 극단적으로 큰 글만 클라이언트 페치로 우회시킨다.
+const INLINE_RECORD_MAP_LIMIT = 400_000
 
 const toIsoString = (value?: string) => {
   if (!value) {
@@ -99,7 +101,7 @@ export const getStaticProps: GetStaticProps<DetailPageProps> = async (
     )
 
     if (!postDetail) {
-      return { notFound: true }
+      return { notFound: true, revalidate: 60 }
     }
 
     let tableOfContents: TTableOfContents = []
@@ -164,7 +166,7 @@ const DetailPage: NextPageWithLayout<DetailPageProps> = ({
   if (!postType) return <CustomError />
 
   const meta = {
-    title: post.title,
+    title: `${post.title} | ${CONFIG.blog.title}`,
     description,
     type: postType,
     url,
